@@ -276,6 +276,12 @@
     "description": "This skill should be used when the user asks to \"intercept HTTP traffic\", \"modify web requests\", \"use Burp Suite for testing\", \"perform web vulnerability scanning\", \"test with Burp Repeater\", \"analyze HTTP history\", or \"configure proxy for web testing\". It provides comprehensive guidance for using Burp Suite's core features for web application security testing."
   },
   {
+    "id": "busybox-on-windows",
+    "path": "skills/busybox-on-windows",
+    "name": "busybox-on-windows",
+    "description": "How to use a Win32 build of BusyBox to run many of the standard UNIX command line tools on Windows."
+  },
+  {
     "id": "canvas-design",
     "path": "skills/canvas-design",
     "name": "canvas-design",
@@ -336,6 +342,12 @@
     "description": "\"Comprehensive checklist for conducting thorough code reviews covering functionality, security, performance, and maintainability\""
   },
   {
+    "id": "codex-review",
+    "path": "skills/codex-review",
+    "name": "codex-review",
+    "description": "Professional code review with auto CHANGELOG generation, integrated with Codex AI"
+  },
+  {
     "id": "cc-skill-coding-standards",
     "path": "skills/cc-skill-coding-standards",
     "name": "coding-standards",
@@ -370,6 +382,12 @@
     "path": "skills/context-window-management",
     "name": "context-window-management",
     "description": "\"Strategies for managing LLM context windows including summarization, trimming, routing, and avoiding context rot Use when: context window, token limit, context management, context engineering, long context.\""
+  },
+  {
+    "id": "context7-auto-research",
+    "path": "skills/context7-auto-research",
+    "name": "context7-auto-research",
+    "description": "Automatically fetch latest library/framework documentation for Claude Code via Context7 API"
   },
   {
     "id": "conversation-memory",
@@ -486,6 +504,12 @@
     "description": "This skill should be used when the user asks to \"learn ethical hacking\", \"understand penetration testing lifecycle\", \"perform reconnaissance\", \"conduct security scanning\", \"exploit vulnerabilities\", or \"write penetration test reports\". It provides comprehensive ethical hacking methodology and techniques."
   },
   {
+    "id": "exa-search",
+    "path": "skills/exa-search",
+    "name": "exa-search",
+    "description": "Semantic search, similar content discovery, and structured research using Exa API"
+  },
+  {
     "id": "executing-plans",
     "path": "skills/executing-plans",
     "name": "executing-plans",
@@ -520,6 +544,12 @@
     "path": "skills/firebase",
     "name": "firebase",
     "description": "\"Firebase gives you a complete backend in minutes - auth, database, storage, functions, hosting. But the ease of setup hides real complexity. Security rules are your last line of defense, and they're often wrong. Firestore queries are limited, and you learn this after you've designed your data model.  This skill covers Firebase Authentication, Firestore, Realtime Database, Cloud Functions, Cloud Storage, and Firebase Hosting. Key insight: Firebase is optimized for read-heavy, denormalized data. I\""
+  },
+  {
+    "id": "firecrawl-scraper",
+    "path": "skills/firecrawl-scraper",
+    "name": "firecrawl-scraper",
+    "description": "Deep web scraping, screenshots, PDF parsing, and website crawling using Firecrawl API"
   },
   {
     "id": "form-cro",
@@ -687,7 +717,7 @@
     "id": "lint-and-validate",
     "path": "skills/lint-and-validate",
     "name": "lint-and-validate",
-    "description": "Automatic quality control, linting, and static analysis procedures. Use after every code modification to ensure syntax correctness and project standards. Triggers onKeywords: lint, format, check, validate, types, static analysis."
+    "description": "\"Automatic quality control, linting, and static analysis procedures. Use after every code modification to ensure syntax correctness and project standards. Triggers onKeywords: lint, format, check, validate, types, static analysis.\""
   },
   {
     "id": "linux-privilege-escalation",
@@ -820,6 +850,12 @@
     "path": "skills/notion-template-business",
     "name": "notion-template-business",
     "description": "\"Expert in building and selling Notion templates as a business - not just making templates, but building a sustainable digital product business. Covers template design, pricing, marketplaces, marketing, and scaling to real revenue. Use when: notion template, sell templates, digital product, notion business, gumroad.\""
+  },
+  {
+    "id": "obsidian-clipper-template-creator",
+    "path": "skills/obsidian-clipper-template-creator",
+    "name": "obsidian-clipper-template-creator",
+    "description": "Guide for creating templates for the Obsidian Web Clipper. Use when you want to create a new clipping template, understand available variables, or format clipped content."
   },
   {
     "id": "onboarding-cro",
@@ -1240,6 +1276,12 @@
     "path": "skills/tailwind-patterns",
     "name": "tailwind-patterns",
     "description": "Tailwind CSS v4 principles. CSS-first configuration, container queries, modern patterns, design token architecture."
+  },
+  {
+    "id": "tavily-web",
+    "path": "skills/tavily-web",
+    "name": "tavily-web",
+    "description": "Web search, content extraction, crawling, and research capabilities using Tavily API"
   },
   {
     "id": "tdd-workflow",

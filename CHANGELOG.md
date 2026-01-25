@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.14.0] - 2026-01-25 - "Web Intelligence & Windows"
+
+### Added
+
+- **New Skill**:
+  - `context7-auto-research`: Auto-research capability for Claude Code.
+  - `codex-review`: Professional code review with AI integration.
+  - `exa-search`: Semantic search and discovery using Exa API.
+  - `firecrawl-scraper`: Deep web scraping and PDF parsing.
+  - `tavily-web`: Content extraction and research using Tavily.
+  - `busybox-on-windows`: UNIX tool suite for Windows environments.
+
+### Changed
+
+- **Documentation**: Updated `obsidian-clipper-template-creator` docs and templates.
+- **Index & Registry**: Updated `skills_index.json` and `README.md` registry.
+
+### Fixed
+
+- **Skills**: Fixed YAML frontmatter quoting in `lint-and-validate`.
+
 ## [2.13.0] - 2026-01-24 - "NoSQL Expert"
 
 ### Added
