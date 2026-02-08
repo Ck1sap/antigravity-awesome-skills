@@ -13,7 +13,7 @@ This skill embodies the principles of "Clean Code" by Robert C. Martin (Uncle Bo
 ## 🧠 Core Philosophy
 > "Code is clean if it can be read, and enhanced by a developer other than its original author." — Grady Booch
 
-## ## When to Use
+## When to Use
 Use this skill when:
 - **Writing new code**: To ensure high quality from the start.
 - **Reviewing Pull Requests**: To provide constructive, principle-based feedback.
