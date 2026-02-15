@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 856,
+  "total": 857,
   "skills": [
     {
       "id": "3d-web-experience",
@@ -11040,6 +11040,32 @@
         "automation"
       ],
       "path": "skills/go-playwright/SKILL.md"
+    },
+    {
+      "id": "go-rod-master",
+      "name": "go-rod-master",
+      "description": "Comprehensive guide for browser automation and web scraping with go-rod (Chrome DevTools Protocol) including stealth anti-bot-detection patterns.",
+      "category": "development",
+      "tags": [
+        "go",
+        "rod",
+        "master"
+      ],
+      "triggers": [
+        "go",
+        "rod",
+        "master",
+        "browser",
+        "automation",
+        "web",
+        "scraping",
+        "chrome",
+        "devtools",
+        "protocol",
+        "including",
+        "stealth"
+      ],
+      "path": "skills/go-rod-master/SKILL.md"
     },
     {
       "id": "godot-gdscript-patterns",

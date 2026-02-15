@@ -2,7 +2,7 @@
 
 Generated at: 2026-02-08T00:00:00.000Z
 
-Total skills: 856
+Total skills: 857
 
 ## architecture (64)
 
@@ -300,7 +300,7 @@ Use when creating container-based agents that run custom code in Azure ... | hos
 | `xlsx-official` | Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work ... | xlsx, official | xlsx, official, spreadsheet, creation, editing, analysis, formulas, formatting, data, visualization, claude, work |
 | `youtube-automation` | Automate YouTube tasks via Rube MCP (Composio): upload videos, manage playlists, search content, get analytics, and handle comments. Always search tools firs... | youtube | youtube, automation, automate, tasks, via, rube, mcp, composio, upload, videos, playlists, search |
 
-## development (127)
+## development (128)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -392,6 +392,7 @@ Triggers: "queue storage", "QueueServic... | azure, storage, queue, py | azure, 
 | `gemini-api-dev` | Use this skill when building applications with Gemini models, Gemini API, working with multimodal content (text, images, audio, video), implementing function... | gemini, api, dev | gemini, api, dev, skill, building, applications, models, working, multimodal, content, text, images |
 | `go-concurrency-patterns` | Master Go concurrency with goroutines, channels, sync primitives, and context. Use when building concurrent Go applications, implementing worker pools, or de... | go, concurrency | go, concurrency, goroutines, channels, sync, primitives, context, building, concurrent, applications, implementing, worker |
 | `go-playwright` | Expert capability for robust, stealthy, and efficient browser automation using Playwright Go. | go, playwright | go, playwright, capability, robust, stealthy, efficient, browser, automation |
+| `go-rod-master` | Comprehensive guide for browser automation and web scraping with go-rod (Chrome DevTools Protocol) including stealth anti-bot-detection patterns. | go, rod, master | go, rod, master, browser, automation, web, scraping, chrome, devtools, protocol, including, stealth |
 | `golang-pro` | Master Go 1.21+ with modern patterns, advanced concurrency, performance optimization, and production-ready microservices. Expert in the latest Go ecosystem i... | golang | golang, pro, go, 21, concurrency, performance, optimization, microservices, latest, ecosystem, including, generics |
 | `hubspot-integration` | Expert patterns for HubSpot CRM integration including OAuth authentication, CRM objects, associations, batch operations, webhooks, and custom objects. Covers... | hubspot, integration | hubspot, integration, crm, including, oauth, authentication, objects, associations, batch, operations, webhooks, custom |
 | `javascript-mastery` | Comprehensive JavaScript reference covering 33+ essential concepts every developer should know. From fundamentals like primitives and closures to advanced pa... | javascript, mastery | javascript, mastery, reference, covering, 33, essential, concepts, every, developer, should, know, fundamentals |
