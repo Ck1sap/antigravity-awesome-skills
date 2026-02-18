@@ -86,3 +86,12 @@ prototypes/residency-plus/
         ├── sc-resolve.js   # URL resolve proxy
         └── sc-related.js   # Related tracks proxy (v2→v1 fallback)
 ```
+## Local Runbook (RESIDENCY+ prototype)
+
+### Prereqs
+- Node.js installed
+- Netlify CLI installed (recommended)
+
+Install Netlify CLI:
+```bash
+npm i -g netlify-cli
