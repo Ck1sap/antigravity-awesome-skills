@@ -2,6 +2,29 @@ import os
 import re
 import argparse
 import sys
+import io
+
+
+def configure_utf8_output() -> None:
+    """Best-effort UTF-8 stdout/stderr on Windows without dropping diagnostics."""
+    if sys.platform != "win32":
+        return
+
+    for stream_name in ("stdout", "stderr"):
+        stream = getattr(sys, stream_name)
+        try:
+            stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+            continue
+        except Exception:
+            pass
+
+        buffer = getattr(stream, "buffer", None)
+        if buffer is not None:
+            setattr(
+                sys,
+                stream_name,
+                io.TextIOWrapper(buffer, encoding="utf-8", errors="backslashreplace"),
+            )
 
 WHEN_TO_USE_PATTERNS = [
     re.compile(r"^##\s+When\s+to\s+Use", re.MULTILINE | re.IGNORECASE),
@@ -41,6 +64,8 @@ def parse_frontmatter(content, rel_path=None):
         return None, [f"YAML Syntax Error: {e}"]
 
 def validate_skills(skills_dir, strict_mode=False):
+    configure_utf8_output()
+
     print(f"🔍 Validating skills in: {skills_dir}")
     print(f"⚙️  Mode: {'STRICT (CI)' if strict_mode else 'Standard (Dev)'}")
     

@@ -1,7 +1,31 @@
 #!/usr/bin/env python3
+import io
 import json
 import os
 import re
+import sys
+
+
+def configure_utf8_output() -> None:
+    """Best-effort UTF-8 stdout/stderr on Windows without dropping diagnostics."""
+    if sys.platform != "win32":
+        return
+
+    for stream_name in ("stdout", "stderr"):
+        stream = getattr(sys, stream_name)
+        try:
+            stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+            continue
+        except Exception:
+            pass
+
+        buffer = getattr(stream, "buffer", None)
+        if buffer is not None:
+            setattr(
+                sys,
+                stream_name,
+                io.TextIOWrapper(buffer, encoding="utf-8", errors="backslashreplace"),
+            )
 
 
 def update_readme():
@@ -62,4 +86,5 @@ def update_readme():
 
 
 if __name__ == "__main__":
+    configure_utf8_output()
     update_readme()
