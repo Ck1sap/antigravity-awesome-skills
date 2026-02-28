@@ -59,9 +59,11 @@ def generate_index(skills_dir, output_file):
             parent_dir = os.path.basename(os.path.dirname(root))
             
             # Default values
+            rel_path = os.path.relpath(root, os.path.dirname(skills_dir))
+            # Force forward slashes for cross-platform JSON compatibility
             skill_info = {
                 "id": dir_name,
-                "path": os.path.relpath(root, os.path.dirname(skills_dir)),
+                "path": rel_path.replace(os.sep, '/'),
                 "category": parent_dir if parent_dir != "skills" else None,  # Will be overridden by frontmatter if present
                 "name": dir_name.replace("-", " ").title(),
                 "description": "",
