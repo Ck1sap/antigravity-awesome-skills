@@ -30,7 +30,7 @@ If this project helps you, you can [support it here](https://buymeacoffee.com/si
 - ⚪ **OpenCode** (Open-source CLI)
 - 🌸 **AdaL CLI** (Self-evolving Coding Agent)
 
-This repository provides essential skills to transform your AI assistant into a **full-stack digital agency**, including official capabilities from **Anthropic**, **OpenAI**, **Google**, **Microsoft**, **Supabase**, and **Vercel Labs**.
+This repository provides essential skills to transform your AI assistant into a **full-stack digital agency**, including official capabilities from **Anthropic**, **OpenAI**, **Google**, **Microsoft**, **Supabase**, **Apify**, and **Vercel Labs**.
 
 ## Table of Contents
 
@@ -472,6 +472,7 @@ This collection would not be possible without the incredible work of the Claude 
 - **[supabase/agent-skills](https://github.com/supabase/agent-skills)**: Supabase official skills - Postgres Best Practices.
 - **[microsoft/skills](https://github.com/microsoft/skills)**: Official Microsoft skills - Azure cloud services, Bot Framework, Cognitive Services, and enterprise development patterns across .NET, Python, TypeScript, Go, Rust, and Java.
 - **[google-gemini/gemini-skills](https://github.com/google-gemini/gemini-skills)**: Official Gemini skills - Gemini API, SDK and model interactions.
+- **[apify/agent-skills](https://github.com/apify/agent-skills)**: Official Apify skills - Web scraping, data extraction and automation.
 
 ### Community Contributors
 
