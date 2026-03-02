@@ -247,6 +247,7 @@ git clone -c core.symlinks=true https://github.com/sickn33/antigravity-awesome-s
 
 Install to the tool-specific path. Use installer flags: `--antigravity` (default), `--claude`, `--gemini`, `--codex`, `--cursor`, or `--path <dir>` for a custom location (e.g. `~/.agent/skills` for Antigravity workspace).
 
+- [AnchorBrowser](https://anchorbrowser.io) - Cloud browser platform for AI agents with MCP server support — provides managed Chromium instances via WebSocket/CDP with built-in proxy rotation and CAPTCHA solving.
 ### Update an existing installation
 
 **Good news!** You no longer need to manually run `git pull` or `npx antigravity-awesome-skills` to update your skills.
