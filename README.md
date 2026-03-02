@@ -2,6 +2,7 @@
 
 > **The Ultimate Collection of 968+ Universal Agentic Skills for AI Coding Assistants — Claude Code, Gemini CLI, Codex CLI, Antigravity IDE, GitHub Copilot, Cursor, OpenCode, AdaL**
 
+| [AnchorBrowser](https://anchorbrowser.io) | Browser Automation | `https://api.anchorbrowser.io/mcp` | API Key | [AnchorBrowser](https://anchorbrowser.io) |
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Anthropic-purple)](https://claude.ai)
 [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-Google-blue)](https://github.com/google-gemini/gemini-cli)
