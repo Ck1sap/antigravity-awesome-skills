@@ -39,3 +39,23 @@ validation-baseline.json
 # Web app generated assets (from npm run app:setup)
 web-app/public/skills/
 web-app/public/skills.json
+
+# Local-only research and tool folders (Not for GitHub)
+yakit/
+playground/
+archives/
+data/temp/
+tools/
+.agent/
+*.py
+*.bat
+*.jar
+*.txt
+*.json
+!package.json
+!package-lock.json
+!skills_index.json
+!models.json
+!data/catalog.json
+!data/aliases.json
+!data/bundles.json
