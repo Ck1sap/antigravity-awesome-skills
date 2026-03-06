@@ -5590,6 +5590,16 @@
     "date_added": "2026-02-27"
   },
   {
+    "id": "git-hooks-automation",
+    "path": "skills/git-hooks-automation",
+    "category": "uncategorized",
+    "name": "git-hooks-automation",
+    "description": "Master Git hooks setup with Husky, lint-staged, pre-commit framework, and commitlint. Automate code quality gates, formatting, linting, and commit message enforcement before code reaches CI.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-07"
+  },
+  {
     "id": "git-pr-workflows-git-workflow",
     "path": "skills/git-pr-workflows-git-workflow",
     "category": "uncategorized",
