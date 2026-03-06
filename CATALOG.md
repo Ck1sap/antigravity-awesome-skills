@@ -2,7 +2,7 @@
 
 Generated at: 2026-02-08T00:00:00.000Z
 
-Total skills: 1206
+Total skills: 1216
 
 ## architecture (78)
 
@@ -384,10 +384,20 @@ Scope::with_data, save state, load state, serde,
 | `xlsx-official` | Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work ... | xlsx, official | xlsx, official, spreadsheet, creation, editing, analysis, formulas, formatting, data, visualization, claude, work |
 | `youtube-automation` | Automate YouTube tasks via Rube MCP (Composio): upload videos, manage playlists, search content, get analytics, and handle comments. Always search tools firs... | youtube | youtube, automation, automate, tasks, via, rube, mcp, composio, upload, videos, playlists, search |
 
-## development (172)
+## development (182)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
+| `animejs-animation` | Advanced JavaScript animation library skill for creating complex, high-performance web animations. | animation, js | animejs, animation, javascript, timelines, svg, morphing |
+| `antigravity-design-expert` | Core UI/UX engineering skill for building highly interactive, spatial, weightless, and glassmorphism-based web interfaces using GSAP and 3D CSS. | ui, ux, animation | antigravity, design, gsap, 3d, css, glassmorphism, isometric |
+| `design-spells` | Curated micro-interactions and design details that add "magic" and personality to websites and apps. | ui, interaction | design, spells, magic, micro-interactions, easter, eggs |
+| `iconsax-library` | Extensive icon library and AI-driven icon generation skill for premium UI/UX design. | icons, design | iconsax, library, icons, premium, generation |
+| `magic-animator` | AI-powered animation tool for creating motion in logos, UI, icons, and social media assets. | ai, animation | magic, animator, auto-animate, logos, ui, motion |
+| `magic-ui-generator` | Utilizes Magic by 21st.dev to generate, compare, and integrate multiple production-ready UI component variations. | ui, generation | magic, ui, generator, 21st.dev, components, variations |
+| `unsplash-integration` | Integration skill for searching and fetching high-quality, free-to-use professional photography from Unsplash. | images, unsplash | unsplash, integration, photos, research, fetch |
+| `vizcom` | AI-powered product design tool for transforming sketches into full-fidelity 3D renders. | ai, product, design | vizcom, rendering, sketches, 3d, renders, design |
+| `spline-3d-integration` | Use when adding interactive 3D scenes from Spline.design to web projects. | 3d, spline | spline, 3d, integration, scenes, runtime, camera |
+| `daily` | Documentation and capabilities reference for Daily | audio, video, ai | daily, conference, call, streaming |
 | `3d-web-experience` | Expert in building 3D experiences for the web - Three.js, React Three Fiber, Spline, WebGL, and interactive 3D scenes. Covers product configurators, 3D portf... | 3d, web, experience | 3d, web, experience, building, experiences, three, js, react, fiber, spline, webgl, interactive |
 | `algolia-search` | Expert patterns for Algolia search implementation, indexing strategies, React InstantSearch, and relevance tuning Use when: adding search to, algolia, instan... | algolia, search | algolia, search, indexing, react, instantsearch, relevance, tuning, adding, api, functionality |
 | `android-jetpack-compose-expert` | Expert guidance for building modern Android UIs with Jetpack Compose, covering state management, navigation, performance, and Material Design 3. | android, jetpack, compose | android, jetpack, compose, guidance, building, uis, covering, state, navigation, performance, material |
