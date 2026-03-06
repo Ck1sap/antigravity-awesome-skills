@@ -31,13 +31,13 @@ const SKILL_CATEGORIES = {
 const SKILL_BUNDLES = {
   'minimal': {
     description: 'Minimal bundle for Gemini (solves issue #215)',
-    categories: ['core', 'architecture'],
+    categories: ['development', 'devops'],
     estimatedTokens: 5000,
     note: 'Recommended for environments with strict token limits'
   },
   'balanced': {
     description: 'Balanced bundle with essential and development skills',
-    categories: ['core', 'architecture', 'backend', 'frontend', 'testing'],
+    categories: ['development', 'devops', 'security', 'documentation'],
     estimatedTokens: 15000,
     note: 'Good for most development scenarios'
   },
