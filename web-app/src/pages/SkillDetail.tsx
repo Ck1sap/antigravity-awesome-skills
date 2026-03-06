@@ -3,9 +3,17 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Copy, Check, FileCode, AlertTriangle, Loader2 } from 'lucide-react';
 import { SkillStarButton } from '../components/SkillStarButton';
 import { useSkills } from '../context/SkillContext';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeRaw from 'rehype-raw';
 
 // Lazy load heavy markdown component
 const Markdown = lazy(() => import('react-markdown'));
+
+/** Strip YAML frontmatter (--- ... ---) from markdown content */
+function stripFrontmatter(md: string): string {
+  return md.replace(/^---[\s\S]*?---\s*\n?/, '');
+}
 
 interface RouteParams {
   id: string;
@@ -180,9 +188,14 @@ export function SkillDetail(): React.ReactElement {
 
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
         <div className="p-6 sm:p-8">
-          <div className="prose prose-slate dark:prose-invert max-w-none">
+          <div className="markdown-body" style={{ backgroundColor: 'transparent' }}>
             <Suspense fallback={<div className="h-24 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-lg"></div>}>
-              <Markdown>{content}</Markdown>
+              <Markdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeHighlight, rehypeRaw]}
+              >
+                {stripFrontmatter(content)}
+              </Markdown>
             </Suspense>
           </div>
         </div>
