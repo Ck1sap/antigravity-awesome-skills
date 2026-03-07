@@ -1,6 +1,6 @@
---- 
+---
 name: spline-3d-integration
-description: "Use when adding interactive 3D scenes from Spline.design to web projects. Covers embedding methods (React, Next.js, vanilla JS), the @splinetool/ runtime API for programmatic control (events, variables, animations, camera), performance optimization, mobile fallbacks, and common integration problems like scroll hijacking, layout shift, GPU fallbacks, and watermark removal."
+description: "Use when adding interactive 3D scenes from Spline.design to web projects, including React embedding and runtime control API."
 risk: safe
 source: community
 date_added: "2026-03-07"

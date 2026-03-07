@@ -1,9 +1,9 @@
---- 
-name: Daily
+---
+name: daily
 description: Documentation and capabilities reference for Daily
 metadata:
-    mintlify-proj: daily
-    version: "1.0"
+  mintlify-proj: daily
+  version: "1.0"
 risk: safe
 source: community
 date_added: "2026-03-07"
@@ -14,6 +14,7 @@ date_added: "2026-03-07"
 Pipecat enables agents to build production-ready voice and multimodal AI applications with real-time processing. Agents can orchestrate complex AI service pipelines that handle audio, video, and text simultaneously while maintaining ultra-low latency (500-800ms round-trip). The framework abstracts away the complexity of coordinating multiple AI services, network transports, and audio processing, allowing agents to focus on application logic.
 
 Key capabilities include:
+
 - Real-time voice conversations with natural turn-taking and interruption handling
 - Multimodal processing combining audio, video, images, and text
 - Integration with 50+ AI services (LLMs, speech recognition, text-to-speech, vision models)
@@ -45,6 +46,7 @@ Agents can create custom frame processors to handle specialized logic, work with
 ### Speech Recognition & Audio Input
 
 Agents can integrate 15+ speech-to-text providers including OpenAI, Google Cloud, Deepgram, AssemblyAI, Azure, and Whisper. Services support:
+
 - Real-time streaming transcription via WebSocket connections
 - Voice Activity Detection (VAD) for automatic speech detection
 - Multiple language support (125+ languages with Google Cloud)
@@ -54,6 +56,7 @@ Agents can integrate 15+ speech-to-text providers including OpenAI, Google Cloud
 ### Text-to-Speech & Audio Output
 
 Agents can choose from 30+ text-to-speech providers including OpenAI, Google Cloud, ElevenLabs, Cartesia, LMNT, and PlayHT. Features include:
+
 - Real-time streaming synthesis with ultra-low latency
 - Multiple voice options and speaking styles per provider
 - Automatic interruption handling for natural conversations
@@ -63,6 +66,7 @@ Agents can choose from 30+ text-to-speech providers including OpenAI, Google Clo
 ### Language Model Integration
 
 Agents can integrate with 20+ LLM providers including OpenAI, Anthropic, Google Gemini, Groq, Perplexity, and open-source models via Ollama. Capabilities include:
+
 - Streaming response generation for real-time output
 - Function calling (tool use) for external API integration
 - Context management with automatic message history tracking
@@ -96,6 +100,7 @@ Function results are automatically stored in conversation context, enabling mult
 ### Context Management & Conversation History
 
 Agents can manage conversation context automatically or manually:
+
 - Automatic context aggregation from transcriptions and TTS output
 - Manual context manipulation via `LLMMessagesAppendFrame` and `LLMMessagesUpdateFrame`
 - Automatic context summarization for long conversations to reduce token usage
@@ -105,6 +110,7 @@ Agents can manage conversation context automatically or manually:
 ### Voice Activity Detection & Turn Management
 
 Agents can configure sophisticated turn-taking strategies:
+
 - VAD-based turn detection for responsive speech detection
 - Transcription-based fallback for edge cases
 - Smart Turn Detection using AI to understand conversation completion
@@ -115,6 +121,7 @@ Agents can configure sophisticated turn-taking strategies:
 ### Transport & Connection Management
 
 Agents can connect users via multiple transport options:
+
 - **WebRTC**: Daily.co, LiveKit, Small WebRTC for low-latency peer connections
 - **WebSocket**: FastAPI, generic WebSocket servers for server-to-server communication
 - **Telephony**: Twilio (WebSocket and SIP), Telnyx, Plivo, Exotel for phone integration
@@ -125,6 +132,7 @@ Agents can connect users via multiple transport options:
 ### Multimodal Processing
 
 Agents can build applications combining multiple modalities:
+
 - Video input processing with vision models (Moondream)
 - Image generation integration (DALL-E, Gemini, Fal)
 - Video synthesis (HeyGen, Tavus, Simli)
@@ -140,17 +148,18 @@ Agents can create specialized processors for application-specific logic:
 class CustomProcessor(FrameProcessor):
     async def process_frame(self, frame: Frame, direction: FrameDirection):
         await super().process_frame(frame, direction)
-        
+
         if isinstance(frame, TranscriptionFrame):
             # Custom logic here
             pass
-        
+
         await self.push_frame(frame, direction)
 ```
 
 ### Structured Conversations with Pipecat Flows
 
 Agents can build complex conversation flows with state management using Pipecat Flows:
+
 - Dynamic flows for runtime-determined conversation paths
 - Static flows for predefined conversation structures
 - State management across conversation turns
@@ -160,6 +169,7 @@ Agents can build complex conversation flows with state management using Pipecat 
 ### Metrics & Observability
 
 Agents can monitor pipeline performance and usage:
+
 - Real-time latency metrics (TTFB, round-trip time)
 - Token usage tracking for LLM and TTS services
 - Frame processing metrics and pipeline throughput
@@ -170,6 +180,7 @@ Agents can monitor pipeline performance and usage:
 ### Client SDKs for Frontend Integration
 
 Agents can build client applications using:
+
 - **JavaScript/TypeScript**: Full-featured SDK with WebSocket and WebRTC transports
 - **React**: Hooks and components for easy integration
 - **React Native**: Mobile support for iOS and Android
@@ -182,6 +193,7 @@ All SDKs implement the RTVI (Real-Time Voice and Video Inference) standard for i
 ### Deployment & Scaling
 
 Agents can deploy applications to:
+
 - **Pipecat Cloud**: Managed service with built-in scaling, logging, and monitoring
 - **Fly.io**: Simple deployment for CPU-based bots
 - **Modal**: GPU-accelerated infrastructure for custom models
