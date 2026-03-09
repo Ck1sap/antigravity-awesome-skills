@@ -24,6 +24,7 @@
 
 ## Table of Contents
 
+- [agent101](https://agent101.ventify.ai/skill.md) - Search 500+ tools, APIs, and services by task. Structured metadata, 15 categories, no auth.
 - [🚀 New Here? Start Here!](#new-here-start-here)
 - [📖 Complete Usage Guide](docs/users/usage.md) - **Start here if confused after installation!**
 - [🔌 Compatibility & Invocation](#compatibility--invocation)
