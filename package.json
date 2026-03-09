@@ -43,5 +43,9 @@
     "antigravity",
     "agentic-skills",
     "ai-coding"
-  ]
+  ],
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "puppeteer": "^24.38.0"
+  }
 }
