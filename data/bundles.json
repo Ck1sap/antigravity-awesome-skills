@@ -18,6 +18,7 @@
         "api-endpoint-builder",
         "api-fuzzing-bug-bounty",
         "api-patterns",
+        "api-rate-limiting",
         "api-security-best-practices",
         "api-security-testing",
         "api-testing-observability-api-mock",

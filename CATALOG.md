@@ -2,7 +2,7 @@
 
 Generated at: 2026-02-08T00:00:00.000Z
 
-Total skills: 1206
+Total skills: 1207
 
 ## architecture (78)
 
@@ -384,7 +384,7 @@ Scope::with_data, save state, load state, serde,
 | `xlsx-official` | Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work ... | xlsx, official | xlsx, official, spreadsheet, creation, editing, analysis, formulas, formatting, data, visualization, claude, work |
 | `youtube-automation` | Automate YouTube tasks via Rube MCP (Composio): upload videos, manage playlists, search content, get analytics, and handle comments. Always search tools firs... | youtube | youtube, automation, automate, tasks, via, rube, mcp, composio, upload, videos, playlists, search |
 
-## development (172)
+## development (173)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -396,6 +396,7 @@ Scope::with_data, save state, load state, serde,
 | `api-documentation` | API documentation workflow for generating OpenAPI specs, creating developer guides, and maintaining comprehensive API documentation. | api, documentation | api, documentation, generating, openapi, specs, creating, developer, guides, maintaining |
 | `api-documentation-generator` | Generate comprehensive, developer-friendly API documentation from code, including endpoints, parameters, examples, and best practices | api, documentation, generator | api, documentation, generator, generate, developer, friendly, code, including, endpoints, parameters, examples |
 | `api-patterns` | API design principles and decision-making. REST vs GraphQL vs tRPC selection, response formats, versioning, pagination. | api | api, principles, decision, making, rest, vs, graphql, trpc, selection, response, formats, versioning |
+| `api-rate-limiting` | Implement and manage API rate limiting strategies to protect backend services and ensure fair usage | api, rate, limiting | api, rate, limiting, protect, backend, fair, usage |
 | `app-store-optimization` | Complete App Store Optimization (ASO) toolkit for researching, optimizing, and tracking mobile app performance on Apple App Store and Google Play Store | app, store, optimization | app, store, optimization, complete, aso, toolkit, researching, optimizing, tracking, mobile, performance, apple |
 | `architecture-patterns` | Implement proven backend architecture patterns including Clean Architecture, Hexagonal Architecture, and Domain-Driven Design. Use when architecting complex ... | architecture | architecture, proven, backend, including, clean, hexagonal, domain, driven, architecting, complex, refactoring, existing |
 | `async-python-patterns` | Master Python asyncio, concurrent programming, and async/await patterns for high-performance applications. Use when building async APIs, concurrent systems, ... | async, python | async, python, asyncio, concurrent, programming, await, high, performance, applications, building, apis, bound |

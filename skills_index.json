@@ -550,6 +550,16 @@
     "date_added": "2026-02-27"
   },
   {
+    "id": "api-rate-limiting",
+    "path": "skills/api-rate-limiting",
+    "category": "uncategorized",
+    "name": "api-rate-limiting",
+    "description": "Implement and manage API rate limiting strategies to protect backend services and ensure fair usage",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2025-01-20"
+  },
+  {
     "id": "api-security-best-practices",
     "path": "skills/api-security-best-practices",
     "category": "uncategorized",

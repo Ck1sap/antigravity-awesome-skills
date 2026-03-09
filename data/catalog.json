@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1206,
+  "total": 1207,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -1310,6 +1310,27 @@
         "versioning"
       ],
       "path": "skills/api-patterns/SKILL.md"
+    },
+    {
+      "id": "api-rate-limiting",
+      "name": "api-rate-limiting",
+      "description": "Implement and manage API rate limiting strategies to protect backend services and ensure fair usage",
+      "category": "development",
+      "tags": [
+        "api",
+        "rate",
+        "limiting"
+      ],
+      "triggers": [
+        "api",
+        "rate",
+        "limiting",
+        "protect",
+        "backend",
+        "fair",
+        "usage"
+      ],
+      "path": "skills/api-rate-limiting/SKILL.md"
     },
     {
       "id": "api-security-best-practices",
