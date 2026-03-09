@@ -1,11 +1,14 @@
-﻿---
-name: unified-diary
-description: "Global Diary System: Trigger the diary workflow from any project. Use `:{Write a diary entry using the diary skill}` for highest accuracy. AI handles content generation and deep rewriting, scripts handle exact data transportation, humans review quality."
+---
+name: diary
+description: "Unified Diary System: A context-preserving automated logger for multi-project development."
+risk: safe
+source: self
 ---
 
-# 📔 Unified Diary System Execution Protocol v4 (Targeted Agent One-Shot)
+# 📔 Unified Diary System
 
-When the user mentions "write a diary", "summarize progress", "daily review" or similar commands in ANY project, **strictly execute the following 4 steps in order**.
+## When to Use This Skill
+Use this skill when you want to summarize progress, write a daily dev log, or perform a daily review while keeping project contexts isolated and synced to Notion/Obsidian.
 
 > 🚨 **Agent One-Shot Integrity Constraint (Highest Priority)**: Steps 1-4 are an **indivisible atomic workflow**. The AI **MUST use Continuous Tool Calling** to complete all actions in one breath.
 > - **ABSOLUTELY FORBIDDEN** to output conversational text and wait for the user after completing Step 1, 2, or 3.
