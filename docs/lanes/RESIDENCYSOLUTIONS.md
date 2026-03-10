@@ -17,7 +17,7 @@ ResidencySolutions has TWO subcomponents:
 - **Stack:** Static HTML + Netlify Functions (ES module format)
 - **What it does:** SoundCloud crate-digging tool with genre filters, shuffle, stations, auto-dig, saved crate, and history. Uses SoundCloud OAuth2 API via serverless proxy.
 - **Official wrapper endpoints deployed:** ✅ (2026-03-10)
-- **Telemetry State:** Sanitized JSON pipeline configured. Logs natively to stdout and forwards asynchronously to Axiom if configured. See [Axiom Runbook](../../prototypes/residency-plus/AXIOM_RUNBOOK.md) & [Dashboards](../../prototypes/residency-plus/AXIOM_DASHBOARD_SPEC.md).
+- **Telemetry State:** Sanitized JSON pipeline configured. Logs natively to stdout and forwards asynchronously to Axiom if configured. See [Axiom Runbook](../../prototypes/residency-plus/AXIOM_RUNBOOK.md), [Dashboards](../../prototypes/residency-plus/AXIOM_DASHBOARD_SPEC.md), & [Alert Policy](../../prototypes/residency-plus/ALERT_POLICY.md).
 - **Legacy endpoints:** REMOVED (quarantined 2026-03-10). Only `sc-official-search` and `sc-official-resolve` remain.
 
 ---
@@ -96,6 +96,7 @@ prototypes/residency-plus/
 ├── AXIOM_RUNBOOK.md          # Operator pipeline diagnostics
 ├── AXIOM_DASHBOARD_SPEC.md   # Axiom UI visualization models
 ├── axiom_queries.apl.txt     # Axiom Kusto-like APL starter statements
+├── ALERT_POLICY.md           # Alert conditions and severities
 └── netlify/
     └── functions/
         ├── sc-auth-lib.js          # Shared OAuth & Ingest Scaffold
