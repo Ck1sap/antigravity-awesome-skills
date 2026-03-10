@@ -15,6 +15,8 @@ compatibility: claude-code
 
 # SkillCheck
 
+## Overview
+
 Validate SKILL.md files against the [agentskills specification](https://agentskills.io) and Anthropic best practices. Catches structural errors, semantic contradictions, naming anti-patterns, and quality gaps in a single read-only pass.
 
 ## When to Use This Skill
