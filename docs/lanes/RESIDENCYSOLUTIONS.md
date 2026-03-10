@@ -1,5 +1,5 @@
 # ResidencySolutions Lane
-_Last updated: 2026-03-10 06:30 EST_
+_Last updated: 2026-03-10 07:00 EST_
 
 ## Overview
 ResidencySolutions has TWO subcomponents:
@@ -10,12 +10,13 @@ ResidencySolutions has TWO subcomponents:
 - **Path:** `G:\DOWNLOADS5\reidchunes\residencysolutions-core`
 
 ### G2: RESIDENCY+ SoundCloud Digger Prototype
-- **Live site (canonical deploy):** `warm-sunflower-466026.netlify.app` (accessible under the soccerwiz14 Netlify team)
-- **Note:** `residencysolutions.netlify.app` is live but on a separate Netlify account not accessible via the CLI token; canonical CLI-accessible site is `warm-sunflower-466026`.
+- **Live site (canonical):** [`residencysolutions.netlify.app`](https://residencysolutions.netlify.app)
+- **Netlify account:** reiidmd@gmail.com | site ID: `03201d30-0c11-4620-a6e4-20d0150c7742`
 - **Source (original):** `G:\DOWNLOADS5\reidchunes`
 - **Source (repo copy):** `prototypes/residency-plus/` in this repo
 - **Stack:** Static HTML + Netlify Functions (ES module format)
 - **What it does:** SoundCloud crate-digging tool with genre filters, shuffle, stations, auto-dig, saved crate, and history. Uses SoundCloud OAuth2 API via serverless proxy.
+- **Official wrapper endpoints deployed:** ✅ (2026-03-10)
 - **Legacy endpoints:** REMOVED (quarantined 2026-03-10). Only `sc-official-search` and `sc-official-resolve` remain.
 
 ---
