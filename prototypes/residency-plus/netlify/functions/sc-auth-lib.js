@@ -161,7 +161,10 @@ export function json(status, body, allowedOrigin = null) {
 
 /**
  * Lightweight structured logger for official wrapper telemetry.
- * Output is captured by Netlify Function Logs.
+ * Output is captured by Netlify Function Logs natively.
+ * 
+ * If TELEMETRY_INGEST_URL is configured, the sanitized JSON payload
+ * is also forwarded to the external sink via a non-blocking HTTP POST.
  * 
  * @param {string} eventName   - String event identifier (e.g. 'sc_search_request')
  * @param {object} payload     - Contextual data (no secrets, no raw queries/urls)
@@ -173,6 +176,29 @@ export function logTelemetry(eventName, payload = {}) {
     timestamp: new Date().toISOString(),
     ...payload
   };
-  // Single-line JSON print for easy ingestion/parsing
-  console.log(JSON.stringify(entry));
+
+  const jsonString = JSON.stringify(entry);
+
+  // 1. Always log locally for Netlify Runtime Logs
+  console.log(jsonString);
+
+  // 2. Scaffold: External Sink Forwarding (if configured)
+  const ingestUrl = process.env.TELEMETRY_INGEST_URL;
+  const ingestToken = process.env.TELEMETRY_INGEST_TOKEN;
+
+  if (ingestUrl) {
+    // Fire-and-forget: we do not await this, so we don't block the client response.
+    // Netlify functions normally allow background promises to finish shortly after return.
+    fetch(ingestUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(ingestToken && { "Authorization": `Bearer ${ingestToken}` })
+      },
+      body: jsonString
+    }).catch(err => {
+      // Swallow forwarding errors silently to protect core functionality
+      console.warn(`[TELEMETRY_WARN] Failed to forward telemetry to external sink: ${err.message}`);
+    });
+  }
 }

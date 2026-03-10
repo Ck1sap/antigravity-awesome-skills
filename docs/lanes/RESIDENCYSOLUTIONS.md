@@ -5,7 +5,7 @@ _Last updated: 2026-03-10 07:00 EST_
 ResidencySolutions has TWO subcomponents:
 
 ### G1: Backend / Product Entitlements Core (NO UI)
-- **Status:** UI frozen. Focus on centralizing entitlements logic.
+- **Status:** UI frozen. SQLite default backend officially signed off.
 - **Hard rule:** No UI changes. Run `scripts/guard-no-ui.ps1` if present.
 - **Path:** `G:\DOWNLOADS5\reidchunes\residencysolutions-core`
 
@@ -17,6 +17,7 @@ ResidencySolutions has TWO subcomponents:
 - **Stack:** Static HTML + Netlify Functions (ES module format)
 - **What it does:** SoundCloud crate-digging tool with genre filters, shuffle, stations, auto-dig, saved crate, and history. Uses SoundCloud OAuth2 API via serverless proxy.
 - **Official wrapper endpoints deployed:** ✅ (2026-03-10)
+- **Telemetry State:** Sanitized JSON pipeline scaffolded. External sink forwarding (e.g., Axiom) is structurally ready pending deployment keys. 
 - **Legacy endpoints:** REMOVED (quarantined 2026-03-10). Only `sc-official-search` and `sc-official-resolve` remain.
 
 ---
@@ -126,6 +127,8 @@ These endpoints use the **official SoundCloud OAuth2 client_credentials flow** (
 | `SOUNDCLOUD_CLIENT_ID` | OAuth client ID |
 | `SOUNDCLOUD_CLIENT_SECRET` | OAuth client secret (new — required by official flow) |
 | `ALLOWED_ORIGINS` | Comma-separated allowed origins, e.g. `http://localhost:8888,http://localhost:3000` |
+| `TELEMETRY_INGEST_URL` | (Optional) Destination URL for structured analytics sink |
+| `TELEMETRY_INGEST_TOKEN` | (Optional) Bearer token for the telemetry sink |
 
 - **Local dev:** set all three in `prototypes/residency-plus/.env` (gitignored)
 - **Deployed:** Netlify Dashboard → Site Settings → Environment Variables (mark `SOUNDCLOUD_CLIENT_SECRET` as **secret**)
