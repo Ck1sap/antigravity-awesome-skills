@@ -1,0 +1,29 @@
+// AXIOM APL QUERY STARTER PACK
+// ResidencySolutions G2 Telemetry
+
+// 1. Overall volume over time (1h bins)
+['residency-plus']
+| where _telemetry == true
+| summarize count() by bin_auto(_time)
+
+// 2. Health Ratio (Success vs Errors)
+['residency-plus']
+| where _telemetry == true
+| summarize count() by status_code
+| render piechart
+
+// 3. Upstream Latency (p50 and p95)
+['residency-plus']
+| where _telemetry == true and isnotnull(duration_ms)
+| summarize p50(duration_ms), p95(duration_ms) by bin_auto(_time)
+
+// 4. Rate Limiting and Rejection Matrix
+['residency-plus']
+| where event in ('rate_limit_block', 'origin_forbidden', 'upstream_429')
+| summarize count() by event, bin_auto(_time)
+| render timechart
+
+// 5. Track specific endpoint (Search vs Resolve) popularity
+['residency-plus']
+| where event == 'sc_search_success' or event == 'sc_resolve_success'
+| summarize avg(duration_ms), Total_Calls=count() by endpoint

@@ -1,5 +1,5 @@
 # ResidencySolutions Lane
-_Last updated: 2026-03-10 07:00 EST_
+_Last updated: 2026-03-10 10:25 EST_
 
 ## Overview
 ResidencySolutions has TWO subcomponents:
@@ -17,7 +17,7 @@ ResidencySolutions has TWO subcomponents:
 - **Stack:** Static HTML + Netlify Functions (ES module format)
 - **What it does:** SoundCloud crate-digging tool with genre filters, shuffle, stations, auto-dig, saved crate, and history. Uses SoundCloud OAuth2 API via serverless proxy.
 - **Official wrapper endpoints deployed:** ✅ (2026-03-10)
-- **Telemetry State:** Sanitized JSON pipeline deployed. Logs natively to stdout and forwards asynchronously to **Axiom** if `AXIOM_*` variables are configured.
+- **Telemetry State:** Sanitized JSON pipeline configured. Logs natively to stdout and forwards asynchronously to Axiom if configured. See [Axiom Runbook](../../prototypes/residency-plus/AXIOM_RUNBOOK.md) & [Dashboards](../../prototypes/residency-plus/AXIOM_DASHBOARD_SPEC.md).
 - **Legacy endpoints:** REMOVED (quarantined 2026-03-10). Only `sc-official-search` and `sc-official-resolve` remain.
 
 ---
@@ -88,12 +88,17 @@ These use the **official SoundCloud OAuth2 client_credentials flow** (Bearer tok
 
 ```
 prototypes/residency-plus/
-├── index.html              # Full RESIDENCY+ app
-├── netlify.toml            # Build config
-├── TELEMETRY_SPEC.md       # Specs for wrapper endpoint analytics
+├── index.html                # Full RESIDENCY+ app
+├── netlify.toml              # Build config
+├── TELEMETRY_SPEC.md         # Specs for wrapper endpoint analytics
+├── TELEMETRY_STORAGE_PLAN.md # Sink planning documentation
+├── SMOKE_TEST.md             # Smoke tests & telemetry checkouts
+├── AXIOM_RUNBOOK.md          # Operator pipeline diagnostics
+├── AXIOM_DASHBOARD_SPEC.md   # Axiom UI visualization models
+├── axiom_queries.apl.txt     # Axiom Kusto-like APL starter statements
 └── netlify/
     └── functions/
-        ├── sc-auth-lib.js          # Shared OAuth / rate-limit / origin logic
+        ├── sc-auth-lib.js          # Shared OAuth & Ingest Scaffold
         ├── sc-official-search.js   # Target for search
         └── sc-official-resolve.js  # Target for resolve
 ```
