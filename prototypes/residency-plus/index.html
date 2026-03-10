@@ -1549,6 +1549,26 @@
           acts.appendChild(remove);
         }
 
+        if (type === "history") {
+          const saveHist = document.createElement("button");
+          saveHist.className = "icon";
+          const alreadySaved = () => crate.some(x => x.url === item.url);
+          saveHist.textContent = alreadySaved() ? "✓" : "Save";
+          saveHist.title = alreadySaved() ? "Already in crate" : "Save to crate";
+          saveHist.onclick = () => {
+            if (alreadySaved()) {
+              saveHist.textContent = "✓";
+              return;
+            }
+            crate.push(item);
+            saveJsonLS(STORAGE_KEY_CRATE, crate);
+            renderList(crateList, crate, "crate");
+            saveHist.textContent = "✓";
+            saveHist.title = "Saved";
+          };
+          acts.appendChild(saveHist);
+        }
+
         li.appendChild(info);
         li.appendChild(acts);
         el.appendChild(li);
