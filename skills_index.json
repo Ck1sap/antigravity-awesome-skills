@@ -7000,6 +7000,16 @@
     "date_added": "2026-03-06"
   },
   {
+    "id": "lex",
+    "path": "skills/lex",
+    "category": "business",
+    "name": "lex",
+    "description": "Centralized 'Truth Engine' for cross-jurisdictional legal context (US, EU, CA) and contract scaffolding.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-10"
+  },
+  {
     "id": "lightning-architecture-review",
     "path": "skills/lightning-architecture-review",
     "category": "uncategorized",
@@ -10298,6 +10308,16 @@
     "risk": "unknown",
     "source": "community",
     "date_added": "2026-02-27"
+  },
+  {
+    "id": "skill-check",
+    "path": "skills/skill-check",
+    "category": "development",
+    "name": "skill-check",
+    "description": "Validate Claude Code skills against the agentskills specification. Catches structural, semantic, and naming issues before users do.",
+    "risk": "safe",
+    "source": "https://github.com/olgasafonova/SkillCheck-Free",
+    "date_added": "2026-03-11"
   },
   {
     "id": "skill-creator",
