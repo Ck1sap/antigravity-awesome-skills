@@ -1,25 +1,19 @@
 ---
 name: ai-md
-version: 4.0.0
-description: >
-  AI.MD — Convert any human-written CLAUDE.md into AI-native structured format.
-  Your CLAUDE.md is read by AI every single turn, not by you — so write it in AI's language.
-  Battle-tested: 5 rounds, 4 models (GPT-5.3, Gemini 2.5 Pro, Grok-4, Claude Opus 4.6).
-  Structured-label format raised Codex compliance from 6/8 → 8/8 on identical content.
-  Same rules, fewer tokens, higher precision.
-  This skill contains the complete methodology: how to take natural language instructions
-  and convert them into a format that LLMs actually follow better.
-  Run with: "distill my CLAUDE.md" or "rewrite my MD for AI" or "蒸餾" or "AI.MD"
-triggers:
-  - user says "CLAUDE.md 太長" "太肥" "額度掉很快" "token 太多"
-  - user says "蒸餾" "distill" "壓縮 MD" "rewrite MD for AI" "ai-md" "AI.MD"
-  - user says "optimize my instructions" "make my MD better"
-  - user notices quota draining fast
-  - CLAUDE.md + rules total > 10KB
-tags: [optimization, token-saving, system-prompt, ai-native, meta, battle-tested, methodology]
+description: "Convert human-written CLAUDE.md into AI-native structured-label format. Battle-tested across 4 models. Same rules, fewer tokens, higher compliance."
+risk: safe
+source: community
+date_added: "2026-03-11"
 ---
 
 # AI.MD v4 — The Complete AI-Native Conversion System
+
+## When to Use This Skill
+
+- Use when your CLAUDE.md is long but AI still ignores your rules
+- Use when token usage is too high from verbose system instructions
+- Use when you want to optimize any LLM system prompt for compliance
+- Use when migrating rules between AI tools (Claude, Codex, Gemini, Grok)
 
 ## What Is AI.MD?
 
