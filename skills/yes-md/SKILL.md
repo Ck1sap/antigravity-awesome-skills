@@ -1,6 +1,9 @@
 ---
 name: "yes-md"
-description: "Use when any task involves modifying files, configs, databases, or deployments. Use when debugging hits 2+ failures. Use when about to guess or assume without evidence ('probably', 'might be', 'I think', 'should be'). Use when deflecting to user ('please check...', 'you should manually...', 'you may need to...'). Use when fixing something without verifying it works. Use when making a conclusion or root-cause claim. Use when skipping tools that are available (has WebSearch but doesn't search, has Bash but doesn't run, has Read but doesn't read). Use when spinning in circles (same approach 3+ times with parameter tweaks). Use when completing a fix without checking for related issues. Use when asking the user a question that could be self-investigated first. Use when giving suggestions instead of actionable code/commands. Applies to ALL task types: debugging, implementation, config, deployment, API integration, data processing. Do NOT trigger on first-attempt failures or when a known fix is already in progress."
+description: "6-layer AI governance: safety gates, evidence-based debugging, anti-slack detection, and machine-enforced hooks. Makes AI safe, thorough, and honest."
+risk: safe
+source: community
+date_added: "2026-03-11"
 ---
 
 # YES.md — AI Governance Engine
