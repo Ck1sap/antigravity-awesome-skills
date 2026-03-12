@@ -89,9 +89,25 @@ exports.handler = async function (event, context) {
     try {
         token = await getAccessToken();
     } catch (err) {
+        const msg = err && err.message ? String(err.message) : "";
+        // If the token endpoint is rate-limited and we have no cached token, treat this
+        // as a soft degradation instead of a hard 400 so the app can stay usable.
+        if (msg.includes("Token request failed — HTTP 429")) {
+            const status_code = 200;
+            logTelemetry("sc_search_degraded", {
+                endpoint: "sc-official-search",
+                origin: allowed,
+                status_code,
+                query_length,
+                reason: "token_rate_limited_no_cache",
+                duration_ms: Date.now() - startMs,
+            });
+            return json(status_code, { collection: [], degraded: true, reason: "token_rate_limited" }, allowed);
+        }
+
         const status_code = 400;
         logTelemetry("sc_search_error", { endpoint: "sc-official-search", origin: allowed, status_code, query_length, duration_ms: Date.now() - startMs });
-        return json(status_code, { error: err.message }, allowed);
+        return json(status_code, { error: msg || "Unknown token error" }, allowed);
     }
 
     // 6. Call official API
@@ -113,6 +129,19 @@ exports.handler = async function (event, context) {
 
     if (upstream.status === 429) {
         return json(429, { error: "Upstream rate limit. Try again later." }, allowed);
+    }
+    if (upstream.status === 401) {
+        const status_code = 200;
+        logTelemetry("sc_search_degraded", {
+            endpoint: "sc-official-search",
+            origin: allowed,
+            status_code,
+            query_length,
+            upstream_status: upstream.status,
+            reason: "upstream_unauthorized",
+            duration_ms: Date.now() - startMs,
+        });
+        return json(status_code, { collection: [], degraded: true, reason: "upstream_unauthorized" }, allowed);
     }
     if (!upstream.ok) {
         const status_code = 502;
