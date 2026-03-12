@@ -1119,9 +1119,13 @@
       </div>
       <div id="authSignedInState" style="display:none; text-align:center;">
         <div style="margin-bottom:6px; font-size:14px;">Signed in as <strong id="authCurrentUser"></strong></div>
-        <div id="planBadge" style="font-size:11px; opacity:.75; margin-bottom:10px;">Plan: Free</div>
-        <button id="upgradeBtn" class="btnPrimary" style="width:100%; justify-content:center; display:none; margin-bottom:8px;">
+        <div id="planBadge" style="font-size:11px; opacity:.75; margin-bottom:4px;">Plan: Free</div>
+        <div style="font-size:11px; opacity:.75; margin-bottom:8px;" id="billingStatusHint"></div>
+        <button id="upgradeBtn" class="btnPrimary" style="width:100%; justify-content:center; display:none; margin-bottom:6px;">
           Upgrade to RESIDENCY+
+        </button>
+        <button id="manageSubBtn" class="btn" style="width:100%; justify-content:center; margin-bottom:6px; display:none;">
+          Manage subscription
         </button>
         <div id="billingMsg" style="font-size:11px; opacity:.75; min-height:14px; margin-bottom:8px;"></div>
         <button id="authSignOutBtn" class="btn" style="width:100%; justify-content:center;">Sign Out</button>
@@ -3243,8 +3247,10 @@
       const authCurrentUser = document.getElementById("authCurrentUser");
       const authSignOutBtn = document.getElementById("authSignOutBtn");
       const planBadge = document.getElementById("planBadge");
+      const billingStatusHint = document.getElementById("billingStatusHint");
       const upgradeBtn = document.getElementById("upgradeBtn");
       const billingMsg = document.getElementById("billingMsg");
+      const manageSubBtn = document.getElementById("manageSubBtn");
 
       if (!AUTH_ENABLED) {
         if (accountBtn) {
@@ -3289,6 +3295,22 @@
             upgradeBtn.style.display = "block";
           }
         }
+        if (billingStatusHint) {
+          if (currentPlan === "residency_plus") {
+            billingStatusHint.textContent = "Your Residency+ subscription is active. Manage or update your billing below.";
+          } else {
+            billingStatusHint.textContent = "You’re on the Free plan. Upgrade to unlock Residency+ features.";
+          }
+        }
+        if (manageSubBtn) {
+          manageSubBtn.style.display = currentPlan === "residency_plus" ? "block" : "none";
+        }
+        if (billingMsg) {
+          billingMsg.textContent = "";
+        }
+        try {
+          sendClientEvent("billing_status_viewed", { plan: currentPlan });
+        } catch { }
       }
 
       async function refreshPlanAndEntitlements() {
@@ -3376,6 +3398,37 @@
             }
           } catch {
             if (billingMsg) billingMsg.textContent = "Upgrade failed. Try again later.";
+          }
+        };
+      }
+
+      if (manageSubBtn) {
+        manageSubBtn.onclick = async () => {
+          if (billingMsg) billingMsg.textContent = "";
+          try {
+            try {
+              sendClientEvent("customer_portal_open_clicked", {});
+            } catch { }
+            const resp = await callAuthedFunction("billing-create-portal-session", "POST", {
+              return_url: window.location.href
+            });
+            if (!resp || resp.billing_enabled === false) {
+              if (billingMsg) billingMsg.textContent = "Subscription management is currently unavailable.";
+              try {
+                sendClientEvent("customer_portal_unavailable", {});
+              } catch { }
+              return;
+            }
+            if (resp.url) {
+              try {
+                sendClientEvent("customer_portal_session_created", {});
+              } catch { }
+              window.location.href = resp.url;
+            } else if (billingMsg) {
+              billingMsg.textContent = "Unable to open subscription management. Try again later.";
+            }
+          } catch {
+            if (billingMsg) billingMsg.textContent = "Subscription management failed. Try again later.";
           }
         };
       }
