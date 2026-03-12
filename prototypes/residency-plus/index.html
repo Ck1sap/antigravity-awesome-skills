@@ -971,6 +971,7 @@
             <input id="vibeInput" placeholder="Search by vibe (e.g. warm hazy synths)" />
           </div>
           <button id="vibeBtn" class="btn" title="Vibe Search">Vibe</button>
+          <select id="vibePresetSelect" class="miniSelect" style="display:none; max-width:180px; font-size:11px;" title="Recent vibes"></select>
           <!-- Auth: small account entry point, hidden/disabled when AUTH_ENABLED=false -->
           <button id="accountBtn" class="btn" style="opacity:.6;" disabled>Account</button>
           <button id="openDrawerBtn" class="btn dots" title="More">⋯</button>
@@ -1149,6 +1150,7 @@
     const STORAGE_KEY_STATION = "residencyStation_v1";
     const STORAGE_KEY_RANGE = "residencyRange_v1";
     const STORAGE_KEY_MIGRATED = "residency_migrated_v1";
+    const STORAGE_KEY_VIBES = "residencyVibes_v1";
 
     // Supabase config (filled via deploy-time env replacement)
     const SUPA_URL = "%%SUPABASE_URL%%";
@@ -1266,6 +1268,7 @@
     const themeBtn = document.getElementById("themeBtn");
     const vibeInput = document.getElementById("vibeInput");
     const vibeBtn = document.getElementById("vibeBtn");
+    const vibePresetSelect = document.getElementById("vibePresetSelect");
 
     // ===== misc helpers =====
     const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -1632,6 +1635,8 @@
     let pendingShuffle = false;
     let lastShuffleAt = 0;
 
+    let savedVibes = [];
+
     // ===== Vibe Search state =====
     let lastVibePalette = null;
 
@@ -1707,6 +1712,55 @@
         vocalPreference: parsed.vocalPreference,
         genreIrrelevant: !!parsed.genreIrrelevant
       };
+    }
+
+    function vibeLabelForPalette(palette) {
+      if (!palette) return "";
+      const bits = [];
+      if (palette.moods && palette.moods.length) bits.push(palette.moods[0]);
+      if (palette.textures && palette.textures.length) bits.push(palette.textures[0]);
+      if (palette.instruments && palette.instruments.length) bits.push(palette.instruments[0]);
+      const base = bits.join(" • ") || (palette.raw || "");
+      return base.length > 40 ? base.slice(0, 37) + "…" : base;
+    }
+
+    function renderVibePresets() {
+      if (!vibePresetSelect) return;
+      while (vibePresetSelect.firstChild) vibePresetSelect.removeChild(vibePresetSelect.firstChild);
+      if (!savedVibes || !savedVibes.length) {
+        vibePresetSelect.style.display = "none";
+        return;
+      }
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Recent vibes…";
+      vibePresetSelect.appendChild(placeholder);
+      for (const v of savedVibes) {
+        const opt = document.createElement("option");
+        opt.value = v.raw;
+        opt.textContent = v.label;
+        vibePresetSelect.appendChild(opt);
+      }
+      vibePresetSelect.style.display = "inline-block";
+      vibePresetSelect.value = "";
+    }
+
+    function saveVibePreset(palette) {
+      if (!palette || !palette.raw) return;
+      const label = vibeLabelForPalette(palette);
+      const raw = palette.raw;
+      const existingIdx = savedVibes.findIndex(v => v.raw === raw);
+      if (existingIdx !== -1) savedVibes.splice(existingIdx, 1);
+      savedVibes.unshift({
+        raw,
+        label,
+        ts: Date.now()
+      });
+      if (savedVibes.length > 10) savedVibes = savedVibes.slice(0, 10);
+      try {
+        saveJsonLS(STORAGE_KEY_VIBES, savedVibes);
+      } catch { }
+      renderVibePresets();
     }
 
     function expandVibeQueries(palette) {
@@ -1880,6 +1934,7 @@
         resetContext();
         pickAndPlay(library);
         setStatus("PLAYING");
+        saveVibePreset(palette);
         if (shouldSample()) {
           sendClientEvent("discovery_vibe_search", {
             raw: palette.raw,
@@ -2802,6 +2857,16 @@
       });
     }
 
+    if (vibePresetSelect && vibeInput) {
+      vibePresetSelect.onchange = () => {
+        const val = vibePresetSelect.value;
+        if (!val) return;
+        vibeInput.value = val;
+        if (window.SC_OK === false) return;
+        runVibeSearch();
+      };
+    }
+
     genreSelect.onchange = () => {
       try { localStorage.setItem(STORAGE_KEY_GENRE, genreSelect.value); } catch { }
       if (typeof debouncedStateSync === "function") debouncedStateSync();
@@ -3106,6 +3171,8 @@
       }
 
       let isSignUpMode = false;
+      savedVibes = loadJsonLS(STORAGE_KEY_VIBES, []) || [];
+      renderVibePresets();
 
       function applyPlanUI() {
         if (!planBadge) return;
