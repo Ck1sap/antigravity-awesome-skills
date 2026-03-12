@@ -161,6 +161,8 @@ const ALLOWED_RECEIVE_CHANNELS = [
   'app:version',
   'update:available',
   'update:progress',
+  'update:downloaded',
+  'update:error',
 ] as const;
 
 type SendChannel = typeof ALLOWED_SEND_CHANNELS[number];
@@ -346,9 +348,10 @@ protocol.registerSchemesAsPrivileged([
 app.whenReady().then(() => {
   protocol.handle('app', async (request) => {
     const url = new URL(request.url);
-    // Resolve and sanitize the path to prevent directory traversal
-    const filePath = path.resolve(__dirname, '../renderer', url.pathname);
     const baseDir = path.resolve(__dirname, '../renderer');
+    // Strip the leading slash so path.resolve keeps baseDir as the root.
+    const relativePath = path.normalize(decodeURIComponent(url.pathname).replace(/^[/\\]+/, ''));
+    const filePath = path.resolve(baseDir, relativePath);
 
     if (!filePath.startsWith(baseDir)) {
       return new Response('Forbidden', { status: 403 });
