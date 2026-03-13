@@ -524,34 +524,6 @@ k6 run --out cloud load-test.js
 
 ---
 
-## Best Practices
-
-- **Start with smoke test**: Verify test works with 1-5 VUs before scaling up
-- **Use realistic data**: Parameterize with real user data and behaviors
-- **Set meaningful thresholds**: Match your SLA and business requirements
-- **Warm up systems**: Include ramp-up time in stages
-- **Monitor external dependencies**: Track not just your APIs but downstream services
-- **Use tags**: Tag requests for granular analysis (`tags: { endpoint: 'users' }`)
-- **Keep tests focused**: One test file per scenario for clarity
-
----
-
-## Common Pitfalls
-
-- **Problem:** Tests pass locally but fail in CI
-  **Solution:** Ensure CI environment has similar resources and network conditions
-
-- **Problem:** Inconsistent results between runs
-  **Solution:** Check for external dependencies, random data, or test data pollution
-
-- **Problem:** k6 runs out of memory
-  **Solution:** Use ` SharedArray` for large data, reduce VUs, or use `--max-memory` flag
-
-- **Problem:** Thresholds too strict
-  **Solution:** Start with relaxed thresholds, tighten based on historical data
-
----
-
 ## Examples
 
 ### Example 1: Basic API Load Test
@@ -606,6 +578,34 @@ export default function () {
   check(res, { 'profile loaded': (r) => r.status === 200 });
 }
 ```
+
+---
+
+## Best Practices
+
+- **Start with smoke test**: Verify test works with 1-5 VUs before scaling up
+- **Use realistic data**: Parameterize with real user data and behaviors
+- **Set meaningful thresholds**: Match your SLA and business requirements
+- **Warm up systems**: Include ramp-up time in stages
+- **Monitor external dependencies**: Track not just your APIs but downstream services
+- **Use tags**: Tag requests for granular analysis (`tags: { endpoint: 'users' }`)
+- **Keep tests focused**: One test file per scenario for clarity
+
+---
+
+## Common Pitfalls
+
+- **Problem:** Tests pass locally but fail in CI
+  **Solution:** Ensure CI environment has similar resources and network conditions
+
+- **Problem:** Inconsistent results between runs
+  **Solution:** Check for external dependencies, random data, or test data pollution
+
+- **Problem:** k6 runs out of memory
+  **Solution:** Use ` SharedArray` for large data, reduce VUs, or use `--max-memory` flag
+
+- **Problem:** Thresholds too strict
+  **Solution:** Start with relaxed thresholds, tighten based on historical data
 
 ---
 
