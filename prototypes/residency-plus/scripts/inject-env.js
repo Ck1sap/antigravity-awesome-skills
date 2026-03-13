@@ -2,17 +2,29 @@
  * Build-time env injection for Netlify.
  * Replaces %%AUTH_ENABLED%%, %%SUPABASE_URL%%, %%SUPABASE_ANON_KEY%%
  * in index.html with values from process.env (set in Netlify UI).
- * Run from repo root with: node prototypes/residency-plus/scripts/inject-env.js
- * Or from base (prototypes/residency-plus): node scripts/inject-env.js
+ * Uses process.cwd() so the file we edit is the one Netlify will publish (base dir).
+ * Run from base (prototypes/residency-plus): node scripts/inject-env.js
  */
 const fs = require("fs");
 const path = require("path");
 
-const baseDir = path.resolve(__dirname, "..");
-const indexPath = path.join(baseDir, "index.html");
-
+const indexPath = path.join(process.cwd(), "index.html");
 let html = fs.readFileSync(indexPath, "utf8");
-html = html.replace("%%AUTH_ENABLED%%", process.env.AUTH_ENABLED ?? "%%AUTH_ENABLED%%");
-html = html.replace("%%SUPABASE_URL%%", process.env.SUPABASE_URL ?? "%%SUPABASE_URL%%");
-html = html.replace("%%SUPABASE_ANON_KEY%%", process.env.SUPABASE_ANON_KEY ?? "%%SUPABASE_ANON_KEY%%");
+
+function val(name, fallback) {
+  const v = (process.env[name] ?? fallback);
+  return typeof v === "string" ? v.trim() : v;
+}
+function authEnabledValue() {
+  const v = (val("AUTH_ENABLED", "") || "").toLowerCase();
+  return (v === "true" || v === "1" || v === "yes") ? "true" : (process.env.AUTH_ENABLED == null ? "%%AUTH_ENABLED%%" : "false");
+}
+
+const authVal = authEnabledValue();
+const supabaseUrl = val("SUPABASE_URL", "%%SUPABASE_URL%%");
+const supabaseKey = val("SUPABASE_ANON_KEY", "%%SUPABASE_ANON_KEY%%");
+
+html = html.replace(/%%AUTH_ENABLED%%/g, authVal);
+html = html.replace(/%%SUPABASE_URL%%/g, supabaseUrl);
+html = html.replace(/%%SUPABASE_ANON_KEY%%/g, supabaseKey);
 fs.writeFileSync(indexPath, html);
