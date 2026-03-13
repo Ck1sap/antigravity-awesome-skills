@@ -973,6 +973,8 @@
           <button id="vibeBtn" class="btn" title="Vibe Search">Vibe</button>
           <select id="vibePresetSelect" class="miniSelect" style="display:none; max-width:180px; font-size:11px;" title="Vibe presets"></select>
           <button id="vibePresetManageBtn" class="btn" style="display:none; font-size:11px; padding:4px 6px;" title="Rename, pin, or delete selected vibe preset">✎</button>
+          <button id="saveSessionBtn" class="btn" style="font-size:11px; padding:4px 6px;" title="Save this dig session for later">Save dig</button>
+          <select id="sessionSelect" class="miniSelect" style="display:none; max-width:160px; font-size:11px;" title="Reopen a saved dig session"></select>
           <!-- Auth: small account entry point, hidden/disabled when AUTH_ENABLED=false -->
           <button id="accountBtn" class="btn" style="opacity:.6;" disabled>Account</button>
           <button id="openDrawerBtn" class="btn dots" title="More">⋯</button>
@@ -1181,6 +1183,7 @@
     const STORAGE_KEY_RANGE = "residencyRange_v1";
     const STORAGE_KEY_MIGRATED = "residency_migrated_v1";
     const STORAGE_KEY_VIBES = "residencyVibes_v1";
+    const STORAGE_KEY_SESSIONS = "residencySessions_v1";
 
     // Supabase config (filled via deploy-time env replacement)
     const SUPA_URL = "%%SUPABASE_URL%%";
@@ -1305,6 +1308,8 @@
     const vibeInput = document.getElementById("vibeInput");
     const vibeBtn = document.getElementById("vibeBtn");
     const vibePresetSelect = document.getElementById("vibePresetSelect");
+    const saveSessionBtn = document.getElementById("saveSessionBtn");
+    const sessionSelect = document.getElementById("sessionSelect");
     const playbackHint = document.getElementById("playbackHint");
     const retryPlaybackBtn = document.getElementById("retryPlaybackBtn");
 
@@ -1727,6 +1732,7 @@
     let playedSet = new Set();
     let playlists = [];
     let currentVibeSession = null;
+    let savedSessions = [];
 
     // anti-skip / anti-double-shuffle
     let shuffleInFlight = false;
@@ -1827,6 +1833,18 @@
       return base.length > 40 ? base.slice(0, 37) + "…" : base;
     }
 
+    function sessionLabelFor(palette, prompt, createdAt) {
+      const base = vibeLabelForPalette(palette) || (prompt || "").trim() || "Saved session";
+      if (!createdAt) return base;
+      try {
+        const d = new Date(createdAt);
+        const dateStr = d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+        return `${base} — ${dateStr}`;
+      } catch {
+        return base;
+      }
+    }
+
     function renderVibePresets() {
       if (!vibePresetSelect) return;
       while (vibePresetSelect.firstChild) vibePresetSelect.removeChild(vibePresetSelect.firstChild);
@@ -1845,6 +1863,8 @@
         vibePresetSelect.style.display = "none";
         const manageBtn = document.getElementById("vibePresetManageBtn");
         if (manageBtn) manageBtn.style.display = "none";
+        const sessionSelect = document.getElementById("sessionSelect");
+        if (sessionSelect) sessionSelect.style.display = "none";
         return;
       }
 
@@ -1873,6 +1893,29 @@
       vibePresetSelect.value = "";
       const manageBtn = document.getElementById("vibePresetManageBtn");
       if (manageBtn) manageBtn.style.display = "inline-block";
+    }
+
+    function renderSavedSessions() {
+      if (!sessionSelect) return;
+      while (sessionSelect.firstChild) sessionSelect.removeChild(sessionSelect.firstChild);
+      if (!savedSessions || !savedSessions.length) {
+        sessionSelect.style.display = "none";
+        sessionSelect.value = "";
+        return;
+      }
+      const sorted = savedSessions.slice().sort((a, b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0));
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Sessions…";
+      sessionSelect.appendChild(placeholder);
+      for (const s of sorted) {
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = sessionLabelFor(s.palette || null, s.prompt || "", s.createdAt || s.updatedAt || 0);
+        sessionSelect.appendChild(opt);
+      }
+      sessionSelect.style.display = "inline-block";
+      sessionSelect.value = "";
     }
 
     function saveVibePreset(palette) {
@@ -2207,6 +2250,7 @@
 
         currentVibeSession = {
           createdAt: now,
+          updatedAt: now,
           palette,
           prompt,
           bucket: genreSelect.value || "all",
@@ -3325,6 +3369,147 @@
       }
     }
 
+    if (saveSessionBtn && sessionSelect) {
+      saveSessionBtn.onclick = () => {
+        if (!currentVibeSession || !currentVibeSession.palette || !currentVibeSession.prompt) {
+          showOk("Run a vibe search first before saving a dig session.");
+          setTimeout(() => { okBox.style.display = "none"; }, 2400);
+          return;
+        }
+        const nowTs = Date.now();
+        const palette = currentVibeSession.palette;
+        const prompt = currentVibeSession.prompt;
+        const bucket = currentVibeSession.bucket || genreSelect.value || "all";
+        const source = currentVibeSession.source || sourceSelect.value || "both";
+        const topSnapshot = Array.isArray(currentVibeSession.results)
+          ? currentVibeSession.results.slice(0, 20).map(it => ({
+              url: it.url || "",
+              title: it.title || "",
+              artist: it.artist || "",
+              bucket: it.bucket || bucket,
+              durationMs: it.durationMs || 0
+            })).filter(it => it.url)
+          : [];
+
+        if (!topSnapshot.length) {
+          showOk("This vibe session has no results to save yet.");
+          setTimeout(() => { okBox.style.display = "none"; }, 2200);
+          return;
+        }
+
+        const label = sessionLabelFor(palette, prompt, currentVibeSession.createdAt || nowTs);
+        let existing = savedSessions.find(s =>
+          s.prompt === prompt &&
+          (s.bucket || "all") === bucket &&
+          (s.source || "both") === source
+        );
+        if (existing) {
+          existing.palette = palette;
+          existing.bucket = bucket;
+          existing.source = source;
+          existing.top = topSnapshot;
+          existing.updatedAt = nowTs;
+        } else {
+          const id = `sess_${nowTs}_${Math.floor(Math.random() * 1e5)}`;
+          existing = {
+            id,
+            label,
+            prompt,
+            palette,
+            bucket,
+            source,
+            top: topSnapshot,
+            createdAt: nowTs,
+            updatedAt: nowTs
+          };
+          savedSessions.push(existing);
+        }
+
+        savedSessions = savedSessions
+          .slice()
+          .sort((a, b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0))
+          .slice(0, 10);
+
+        try { saveJsonLS(STORAGE_KEY_SESSIONS, savedSessions); } catch { }
+        renderSavedSessions();
+        try {
+          sendClientEvent("vibe_session_saved", {
+            id: existing.id,
+            prompt: existing.prompt,
+            bucket: existing.bucket,
+            source: existing.source
+          });
+        } catch { }
+        showOk("Dig session saved.");
+        setTimeout(() => { okBox.style.display = "none"; }, 2000);
+      };
+
+      sessionSelect.onchange = () => {
+        const id = sessionSelect.value;
+        if (!id) return;
+        const sess = savedSessions.find(s => s.id === id);
+        if (!sess) return;
+
+        currentVibeSession = {
+          createdAt: sess.createdAt || Date.now(),
+          updatedAt: Date.now(),
+          palette: sess.palette || null,
+          prompt: sess.prompt || "",
+          bucket: sess.bucket || genreSelect.value || "all",
+          source: sess.source || sourceSelect.value || "both",
+          results: Array.isArray(sess.top) ? sess.top.map(it => ({
+            kind: "track",
+            title: it.title || "",
+            artist: it.artist || "",
+            url: it.url || "",
+            bucket: it.bucket || sess.bucket || "other",
+            tags: [],
+            durationMs: it.durationMs || 0,
+            uploadedAt: "",
+            bpmGuess: "",
+            keyGuess: "",
+            plays: null,
+            likes: null,
+            comments: null
+          })) : []
+        };
+
+        if (vibeInput) {
+          vibeInput.value = sess.prompt || "";
+        }
+
+        try {
+          sendClientEvent("vibe_session_reopened", {
+            id: sess.id,
+            prompt: sess.prompt,
+            bucket: sess.bucket,
+            source: sess.source
+          });
+        } catch { }
+
+        if (currentVibeSession.results && currentVibeSession.results.length) {
+          library = currentVibeSession.results.slice();
+          renderList(crateList, crate, "crate");
+          renderList(historyList, history, "history");
+          resetContext();
+          pickAndPlay(library);
+          setStatus("PLAYING");
+          try {
+            sendClientEvent("vibe_session_resumed", {
+              id: sess.id,
+              prompt: sess.prompt,
+              bucket: sess.bucket,
+              source: sess.source
+            });
+          } catch { }
+        } else if (vibeInput && (sess.prompt || "").trim()) {
+          runVibeSearch();
+        }
+
+        sessionSelect.value = "";
+      };
+    }
+
     if (retryPlaybackBtn) {
       retryPlaybackBtn.onclick = () => {
         try { sendClientEvent("retry_in_app_playback_clicked", { limited: playbackLimited }); } catch { }
@@ -3573,6 +3758,8 @@
       if (!Array.isArray(crate)) crate = [];
       history = loadJsonLS(STORAGE_KEY_HISTORY, []);
       if (!Array.isArray(history)) history = [];
+      savedSessions = loadJsonLS(STORAGE_KEY_SESSIONS, []);
+      if (!Array.isArray(savedSessions)) savedSessions = [];
 
       renderList(crateList, crate, "crate");
       renderList(historyList, history, "history");
