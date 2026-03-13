@@ -3834,6 +3834,9 @@
       if (accountBtn) {
         accountBtn.disabled = false;
         accountBtn.style.opacity = "1";
+        try {
+          sendClientEvent("auth_entry_visible", {});
+        } catch { }
       }
 
       let isSignUpMode = false;
@@ -3916,6 +3919,10 @@
             refreshPlanAndEntitlements();
           }
           authModal.style.display = "block";
+          try {
+            sendClientEvent("auth_entry_clicked", {});
+            sendClientEvent("auth_modal_opened", {});
+          } catch { }
         };
       }
 
