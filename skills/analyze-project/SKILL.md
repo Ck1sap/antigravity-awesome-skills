@@ -454,8 +454,8 @@ Add short notes only where meaningful.
 ## Step 11: Auto-Optimize — Improve Future Sessions
 
 ### 11a. Update Project Health State
-Read:
-`../project-health-state/SKILL.md
+# Example path (update to your actual location):
+# `~/.gemini/antigravity/.agent/skills/project-health-state/SKILL.md`
 
 Update:
 - session analysis metrics
