@@ -11,6 +11,7 @@ import { getJwtUser } from "./sc-supabase-lib.js";
 
 const BILLING_ENABLED = process.env.BILLING_ENABLED === "true";
 const STRIPE_PRICE_RESIDENCY_PLUS = process.env.STRIPE_PRICE_RESIDENCY_PLUS;
+const HAS_STRIPE_SECRET = !!process.env.STRIPE_SECRET_KEY;
 
 export default async function handler(req) {
   if (req.method === "OPTIONS") {
@@ -29,26 +30,34 @@ export default async function handler(req) {
   if (!origin && req.headers.get("origin")) return json(403, { error: "Origin not permitted." });
   if (req.method !== "POST") return json(405, { error: "Method not allowed" }, origin);
 
+  console.log("[billing-create-checkout] billing_enabled=" + BILLING_ENABLED + " has_stripe_secret=" + HAS_STRIPE_SECRET + " has_price_id=" + !!STRIPE_PRICE_RESIDENCY_PLUS);
+
   if (!BILLING_ENABLED || !process.env.STRIPE_SECRET_KEY || !STRIPE_PRICE_RESIDENCY_PLUS) {
     logTelemetry("billing_checkout_disabled", { endpoint: "billing-create-checkout", origin });
-    return json(200, { billing_enabled: false }, origin);
+    return json(200, { billing_enabled: false, error: "Billing is not configured for this environment." }, origin);
   }
 
+  let user;
   try {
-    const user = getJwtUser(req);
-    if (!user) {
-      logTelemetry("billing_checkout_auth_invalid", { endpoint: "billing-create-checkout", origin });
-      return json(401, { error: "Missing or invalid token" }, origin);
-    }
+    user = getJwtUser(req);
+  } catch (e) {
+    console.error("[billing-create-checkout] getJwtUser error", e?.message || e);
+    return json(401, { error: "Missing or invalid token", billing_enabled: true }, origin);
+  }
+  if (!user) {
+    logTelemetry("billing_checkout_auth_invalid", { endpoint: "billing-create-checkout", origin });
+    console.log("[billing-create-checkout] no authenticated user");
+    return json(401, { error: "Missing or invalid token", billing_enabled: true }, origin);
+  }
+  console.log("[billing-create-checkout] user id=" + (user.uid || "") + " email=" + (user.email ? "(present)" : "(none)"));
 
-    // Lazy-load Stripe only when billing is actually enabled.
+  try {
     const StripeModule = await import("stripe");
     const stripe = new StripeModule.default(process.env.STRIPE_SECRET_KEY, {
       apiVersion: "2023-10-16",
     });
 
-    const body = await req.json();
-    // Frontend sends success_url and cancel_url with ?checkout=success / ?checkout=cancel for analytics.
+    const body = await req.json().catch(() => ({}));
     const successUrl = body.success_url || process.env.BILLING_SUCCESS_URL;
     const cancelUrl = body.cancel_url || process.env.BILLING_CANCEL_URL;
 
@@ -68,6 +77,7 @@ export default async function handler(req) {
       },
     });
 
+    console.log("[billing-create-checkout] Stripe session created url=" + !!session.url);
     logTelemetry("billing_checkout_started", {
       endpoint: "billing-create-checkout",
       origin,
@@ -76,9 +86,9 @@ export default async function handler(req) {
 
     return json(200, { billing_enabled: true, url: session.url }, origin);
   } catch (err) {
-    // Foundation only: treat billing failure as non-fatal.
+    console.error("[billing-create-checkout] Stripe error", err?.message || err);
     logTelemetry("billing_checkout_error", { endpoint: "billing-create-checkout", origin, error: err.message });
-    return json(500, { error: err.message || "Billing checkout failed." }, origin);
+    return json(500, { error: err.message || "Billing checkout failed.", billing_enabled: true }, origin);
   }
 }
 

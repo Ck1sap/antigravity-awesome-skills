@@ -1518,6 +1518,59 @@
       }
     }
 
+    const BILLING_CHECKOUT_TIMEOUT_MS = 15000;
+
+    async function callBillingCheckout(successUrl, cancelUrl) {
+      if (!AUTH_ENABLED || !rplusSupabase) {
+        console.log("[Residency+] callBillingCheckout: AUTH_ENABLED or rplusSupabase missing");
+        return null;
+      }
+      const token = await getNetlifyToken();
+      if (!token) {
+        console.log("[Residency+] callBillingCheckout: no token");
+        return null;
+      }
+      const payload = { success_url: successUrl, cancel_url: cancelUrl };
+      const url = "/.netlify/functions/billing-create-checkout";
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), BILLING_CHECKOUT_TIMEOUT_MS);
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "authorization": `Bearer ${token}`,
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        const text = await res.text();
+        console.log("[Residency+] billing-create-checkout response", { status: res.status, statusText: res.statusText, bodyLength: text?.length });
+        let data = null;
+        try {
+          data = text ? JSON.parse(text) : null;
+        } catch (parseErr) {
+          console.error("[Residency+] billing-create-checkout response not JSON", text?.slice(0, 200));
+          throw new Error("Invalid response from server.");
+        }
+        if (!res.ok) {
+          const errMsg = (data && data.error) ? data.error : `Request failed (${res.status})`;
+          console.error("[Residency+] billing-create-checkout error response", { status: res.status, error: errMsg });
+          return { error: errMsg, billing_enabled: false, _status: res.status };
+        }
+        return data;
+      } catch (e) {
+        clearTimeout(timeoutId);
+        if (e.name === "AbortError") {
+          console.error("[Residency+] billing-create-checkout timeout after", BILLING_CHECKOUT_TIMEOUT_MS, "ms");
+          throw new Error("Checkout timed out. Please try again.");
+        }
+        console.error("[Residency+] billing-create-checkout fetch error", e);
+        throw e;
+      }
+    }
+
     // ===== Client Telemetry (high-signal only) =====
     const TELEMETRY_ENABLED = true;
     const TELEMETRY_SAMPLE_RATE = 0.2; // 20% sampling for per-search metrics
@@ -4298,6 +4351,7 @@
 
       if (upgradeBtn) {
         upgradeBtn.onclick = async () => {
+          console.log("[Residency+] Upgrade click start");
           if (billingMsg) {
             billingMsg.textContent = "";
             billingMsg.style.display = "none";
@@ -4308,12 +4362,18 @@
           try {
             try { sendClientEvent("upgrade_click", {}); } catch { }
             const baseUrl = window.location.origin + window.location.pathname;
-            const resp = await callAuthedFunction("billing-create-checkout", "POST", {
-              success_url: baseUrl + "?checkout=success",
-              cancel_url: baseUrl + "?checkout=cancel"
-            });
+            const successUrl = baseUrl + "?checkout=success";
+            const cancelUrl = baseUrl + "?checkout=cancel";
+            console.log("[Residency+] Upgrade request payload", { success_url: successUrl, cancel_url: cancelUrl });
+            let resp;
+            try {
+              resp = await callBillingCheckout(successUrl, cancelUrl);
+            } catch (e) {
+              console.error("[Residency+] Upgrade catch (timeout or fetch error)", e);
+              throw e;
+            }
             if (!resp || resp.billing_enabled === false) {
-              const errMsg = resp && resp.error ? resp.error : "Billing is currently unavailable.";
+              const errMsg = (resp && resp.error) ? resp.error : "Billing is currently unavailable.";
               if (billingMsg) {
                 billingMsg.textContent = errMsg;
                 billingMsg.style.display = "block";
@@ -4322,6 +4382,7 @@
               return;
             }
             if (resp.url) {
+              console.log("[Residency+] Upgrade redirect url", resp.url);
               try { sendClientEvent("checkout_start", {}); } catch { }
               window.location.href = resp.url;
               return;
@@ -4339,6 +4400,7 @@
             }
             console.error("[Residency+] Upgrade error", e);
           } finally {
+            console.log("[Residency+] Upgrade finally: restore button");
             upgradeBtn.disabled = false;
             upgradeBtn.textContent = originalText;
           }
