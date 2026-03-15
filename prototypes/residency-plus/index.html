@@ -1442,6 +1442,11 @@
       if (num >= 1_000) return `${(num / 1_000).toFixed(1)}k`;
       return String(num);
     }
+    function looksLikeEmail(str) {
+      const s = (str || "").trim();
+      if (!s) return false;
+      return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s);
+    }
     function setPill(el, text) {
       if (!el) return;
       if (text) {
@@ -2069,6 +2074,7 @@
 
     function saveVibePreset(palette) {
       if (!palette || !palette.raw) return;
+      if (looksLikeEmail(palette.raw)) return;
       if (currentEntitlements && currentPlan === "free") {
         const limit = currentEntitlements.vibePresetLimit || 5;
         if (savedVibes.length >= limit) {
@@ -2335,6 +2341,11 @@
     async function runVibeSearch() {
       if (!vibeInput) return;
       const prompt = vibeInput.value.trim();
+      if (looksLikeEmail(prompt)) {
+        // Hard guard: never treat emails as vibe prompts
+        vibeInput.value = "";
+        return;
+      }
       if (!prompt) return;
       if (searchPipelineInFlight) return;
       const parsed = parseVibePrompt(prompt);
@@ -3488,6 +3499,7 @@
       vibePresetSelect.onchange = () => {
         const val = vibePresetSelect.value;
         if (!val) return;
+        if (looksLikeEmail(val)) return;
         vibeInput.value = val;
         if (window.SC_OK === false) return;
         runVibeSearch();
@@ -3598,6 +3610,7 @@
         const nowTs = Date.now();
         const palette = currentVibeSession.palette;
         const prompt = currentVibeSession.prompt;
+        if (looksLikeEmail(prompt)) return;
         const bucket = currentVibeSession.bucket || genreSelect.value || "all";
         const source = currentVibeSession.source || sourceSelect.value || "both";
         const topSnapshot = Array.isArray(currentVibeSession.results)
@@ -3695,7 +3708,8 @@
         };
 
         if (vibeInput) {
-          vibeInput.value = sess.prompt || "";
+          const p = sess.prompt || "";
+          vibeInput.value = looksLikeEmail(p) ? "" : p;
         }
 
         try {
@@ -3984,6 +3998,10 @@
       if (!Array.isArray(history)) history = [];
       savedSessions = loadJsonLS(STORAGE_KEY_SESSIONS, []);
       if (!Array.isArray(savedSessions)) savedSessions = [];
+      else {
+        savedSessions = savedSessions.filter(s => !looksLikeEmail(s.prompt || ""));
+        try { saveJsonLS(STORAGE_KEY_SESSIONS, savedSessions); } catch { }
+      }
 
       renderList(crateList, crate, "crate");
       renderList(historyList, history, "history");
@@ -4110,6 +4128,10 @@
 
       let isSignUpMode = false;
       savedVibes = loadJsonLS(STORAGE_KEY_VIBES, []) || [];
+      if (Array.isArray(savedVibes) && savedVibes.length) {
+        savedVibes = savedVibes.filter(v => !looksLikeEmail(v.raw || v.prompt || ""));
+        try { saveJsonLS(STORAGE_KEY_VIBES, savedVibes); } catch { }
+      }
       renderVibePresets();
 
       function applyPlanUI() {
@@ -4791,6 +4813,7 @@
               };
             });
 
+            savedVibes = savedVibes.filter(v => !looksLikeEmail(v.raw || v.prompt || ""));
             saveJsonLS(STORAGE_KEY_VIBES, savedVibes);
             renderVibePresets();
 
@@ -4866,6 +4889,7 @@
               updatedAt: s.updatedAt || s.createdAt || 0
             }));
 
+            savedSessions = savedSessions.filter(s => !looksLikeEmail(s.prompt || ""));
             saveJsonLS(STORAGE_KEY_SESSIONS, savedSessions);
             renderSavedSessions();
 
