@@ -11640,6 +11640,16 @@
     "date_added": "2026-02-27"
   },
   {
+    "id": "trpc-fullstack",
+    "path": "skills/trpc-fullstack",
+    "category": "framework",
+    "name": "trpc-fullstack",
+    "description": "Build end-to-end type-safe APIs with tRPC \u2014 routers, procedures, middleware, subscriptions, and Next.js/React integration patterns.",
+    "risk": "none",
+    "source": "community",
+    "date_added": "2026-03-17"
+  },
+  {
     "id": "turborepo-caching",
     "path": "skills/turborepo-caching",
     "category": "uncategorized",

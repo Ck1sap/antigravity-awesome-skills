@@ -2,7 +2,7 @@
 
 Generated at: 2026-02-08T00:00:00.000Z
 
-Total skills: 1264
+Total skills: 1265
 
 ## architecture (82)
 
@@ -418,7 +418,7 @@ Scope::with_data, save state, load state, serde,
 | `yes-md` | 6-layer AI governance: safety gates, evidence-based debugging, anti-slack detection, and machine-enforced hooks. Makes AI safe, thorough, and honest. | yes, md | yes, md, layer, ai, governance, safety, gates, evidence, debugging, anti, slack, detection |
 | `youtube-automation` | Automate YouTube tasks via Rube MCP (Composio): upload videos, manage playlists, search content, get analytics, and handle comments. Always search tools firs... | youtube | youtube, automation, automate, tasks, via, rube, mcp, composio, upload, videos, playlists, search |
 
-## development (179)
+## development (180)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -595,6 +595,7 @@ no matching field, parse error, widget... | makepad, reference | makepad, refere
 | `telegram` | Integracao completa com Telegram Bot API. Setup com BotFather, mensagens, webhooks, inline keyboards, grupos, canais. Boilerplates Node.js e Python. | messaging, telegram, bots, webhooks | messaging, telegram, bots, webhooks, integracao, completa, com, bot, api, setup, botfather, mensagens |
 | `telegram-mini-app` | Expert in building Telegram Mini Apps (TWA) - web apps that run inside Telegram with native-like experience. Covers the TON ecosystem, Telegram Web App API, ... | telegram, mini, app | telegram, mini, app, building, apps, twa, web, run, inside, native, like, experience |
 | `temporal-python-testing` | Test Temporal workflows with pytest, time-skipping, and mocking strategies. Covers unit testing, integration testing, replay testing, and local development s... | temporal, python | temporal, python, testing, test, pytest, time, skipping, mocking, covers, unit, integration, replay |
+| `trpc-fullstack` | Build end-to-end type-safe APIs with tRPC — routers, procedures, middleware, subscriptions, and Next.js/React integration patterns. | typescript, trpc, api, fullstack, nextjs, react, type-safety | typescript, trpc, api, fullstack, nextjs, react, type-safety, type, safe, apis, routers, procedures |
 | `twilio-communications` | Build communication features with Twilio: SMS messaging, voice calls, WhatsApp Business API, and user verification (2FA). Covers the full spectrum from simpl... | twilio, communications | twilio, communications, communication, features, sms, messaging, voice, calls, whatsapp, business, api, user |
 | `typescript-advanced-types` | Master TypeScript's advanced type system including generics, conditional types, mapped types, template literals, and utility types for building type-safe app... | typescript, advanced, types | typescript, advanced, types, type, including, generics, conditional, mapped, literals, utility, building, safe |
 | `typescript-expert` | TypeScript and JavaScript expert with deep knowledge of type-level programming, performance optimization, monorepo management, migration strategies, and mode... | typescript | typescript, javascript, deep, knowledge, type, level, programming, performance, optimization, monorepo, migration, tooling |
