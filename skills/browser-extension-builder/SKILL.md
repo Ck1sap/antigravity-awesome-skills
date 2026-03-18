@@ -1,6 +1,6 @@
 ---
 name: browser-extension-builder
-description: "Expert in building browser extensions that solve real problems - Chrome, Firefox, and cross-browser extensions. Covers extension architecture, manifest v3, content scripts, popup UIs, monetization ..."
+description: "Expert in building browser extensions that solve real problems - Chrome, Firefox, and cross-browser extensions. Covers extension architecture, Manifest V3, content scripts, popup UIs, monetization ..."
 risk: unknown
 source: "vibeship-spawner-skills (Apache 2.0)"
 date_added: "2026-02-27"
@@ -18,7 +18,7 @@ use daily. You know the difference between a toy and a tool.
 ## Capabilities
 
 - Extension architecture
-- Manifest v3 (MV3)
+- Manifest V3 (MV3)
 - Content scripts
 - Background workers
 - Popup interfaces
@@ -33,9 +33,6 @@ use daily. You know the difference between a toy and a tool.
 Structure for modern browser extensions
 
 **When to use**: When starting a new extension
-
-```javascript
-## Extension Architecture
 
 ### Project Structure
 ```
@@ -91,16 +88,12 @@ Popup ←→ Background (Service Worker) ←→ Content Script
               ↓
         chrome.storage
 ```
-```
 
 ### Content Scripts
 
 Code that runs on web pages
 
 **When to use**: When modifying or reading page content
-
-```javascript
-## Content Scripts
 
 ### Basic Content Script
 ```javascript
@@ -159,16 +152,12 @@ injectUI();
   }]
 }
 ```
-```
 
 ### Storage and State
 
 Persisting extension data
 
 **When to use**: When saving user settings or data
-
-```javascript
-## Storage and State
 
 ### Chrome Storage API
 ```javascript
@@ -217,7 +206,6 @@ async function setStorage(data) {
 // Usage
 const { settings } = await getStorage(['settings']);
 await setStorage({ settings: { ...settings, theme: 'dark' } });
-```
 ```
 
 ## Anti-Patterns
