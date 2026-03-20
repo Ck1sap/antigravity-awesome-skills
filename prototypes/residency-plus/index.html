@@ -3264,8 +3264,8 @@
               const libIdx = library.findIndex(x => x.url === item.url);
               if (libIdx !== -1) { library[libIdx].title = newTitle; library[libIdx].artist = newArtist; }
               if (type === "crate") { const ci = crate.findIndex(x => x.url === item.url); if (ci !== -1) crate[ci].title = newTitle; crate[ci].artist = newArtist; saveJsonLS(STORAGE_KEY_CRATE, crate); }
-              if (type === "history") { const hi = history.findIndex(x => x.url === item.url); if (hi !== -1) history[hi].title = newTitle; history[hi].artist = newArtist; saveJsonLS(STORAGE_KEY_HISTORY, history); }
-              if (typeof idbSet === "function") await idbSet(STORAGE_KEY_LIBRARY, library);
+              if (type === "history") { const hi = history.findIndex(x => x.url === item.url); if (hi !== -1) history[hi].title = newTitle; history[hi].artist = newArtist; safePersistHistory(); }
+              await safePersistLibrary();
               name.textContent = newTitle || "Untitled";
               meta.textContent = [item.kind, newArtist, item.bucket].filter(Boolean).join(" · ");
             }
@@ -3285,8 +3285,8 @@
               const crateIdx = crate.findIndex(x => x.url === url);
               if (crateIdx !== -1) { crate.splice(crateIdx, 1); saveJsonLS(STORAGE_KEY_CRATE, crate); }
               const histIdx = history.findIndex(x => x.url === url);
-              if (histIdx !== -1) { history.splice(histIdx, 1); saveJsonLS(STORAGE_KEY_HISTORY, history); }
-              if (typeof idbSet === "function") await idbSet(STORAGE_KEY_LIBRARY, library);
+              if (histIdx !== -1) { history.splice(histIdx, 1); safePersistHistory(); }
+              await safePersistLibrary();
               if (typeof debouncedCrateSync === "function") debouncedCrateSync();
               if (typeof debouncedHistorySync === "function") debouncedHistorySync();
               try {
@@ -3313,21 +3313,7 @@
     }
 
     function addToHistory(item) {
-      if (!item?.url) return;
-      if (history.length && history[0].url === item.url) return;
-      const withTs = { ...item, playedAt: item.playedAt || new Date().toISOString() };
-      history.unshift(withTs);
-      if (history.length > 250) history = history.slice(0, 250);
-      saveJsonLS(STORAGE_KEY_HISTORY, history);
-      if (typeof debouncedHistorySync === "function") debouncedHistorySync();
-      renderList(historyList, history, "history");
-      if (currentEntitlements && currentPlan === "free" && !historyLimitPromptShown) {
-        if (history.length >= (currentEntitlements.historyLimit || 200)) {
-          historyLimitPromptShown = true;
-          showOk("History is nearing the free plan limit. Upgrade to RESIDENCY+ for deeper history.");
-          setTimeout(() => { okBox.style.display = "none"; }, 3500);
-        }
-      }
+      safeAddToHistory(item);
     }
 
     // ===== Scoring / selection =====
@@ -3371,10 +3357,12 @@
 
     // ===== Core: library add (bucket-first) =====
     function pushUnique(item) {
-      const url = normalizeUrl(item?.url || "");
+      const safe = mustAcceptPlayableItem(item, "library");
+      if (!safe) return false;
+      const url = normalizeUrl(safe?.url || "");
       if (!url) return false;
       for (const x of library) { if (x.url === url) return false; }
-      library.push({ ...item, url });
+      library.push({ ...safe, url });
       return true;
     }
 
@@ -3660,7 +3648,7 @@
           if (ok) added++;
         }
       }
-      if (added > 0) await idbSet(STORAGE_KEY_LIBRARY, library);
+      if (added > 0) await safePersistLibrary();
       setProgress("");
       progressLine.classList.remove("spinning");
       return added;
@@ -3729,6 +3717,20 @@
       return /\.(png|jpe?g|gif|webp|bmp|svg)$/.test(pathname);
     }
 
+    function isBlockedAppPlaybackUrl(url) {
+      if (!url || typeof url !== "string") return false;
+      const lower = String(url).toLowerCase();
+      if (lower.includes("residencysolutions.net")) return true;
+      try {
+        const u = new URL(url);
+        const host = (u.hostname || "").toLowerCase();
+        const currentHost = (window?.location?.hostname || "").toLowerCase();
+        return !!currentHost && host === currentHost;
+      } catch {
+        return false;
+      }
+    }
+
     // ===== Playable Item Sanitizer (fail-closed) =====
     function sanitizePlayableItem(item) {
       try {
@@ -3738,8 +3740,7 @@
         const uploadsCandidateUrl = item.playableUrl || item.storage_url || item.url || "";
         const soundcloudCandidateUrl = item.openUrl || item.url || "";
 
-        const scUrlLower = String(soundcloudCandidateUrl || "").toLowerCase();
-        const isAppUrl = scUrlLower.includes("residencysolutions.net");
+        const isAppUrl = isBlockedAppPlaybackUrl(soundcloudCandidateUrl) || isBlockedAppPlaybackUrl(uploadsCandidateUrl);
 
         // Never accept embed URL forms as "track URLs" to avoid nested iframe poisoning.
         let looksLikeSoundCloudEmbed = false;
@@ -3807,6 +3808,74 @@
         return null;
       } catch {
         return null;
+      }
+    }
+
+    function mustAcceptPlayableItem(item, context = "item") {
+      const safe = sanitizePlayableItem(item);
+      if (!safe) {
+        if (context === "history") console.warn("[PlayerGuard] blocked invalid history item", { item });
+        else if (context === "library") console.warn("[PlayerGuard] blocked invalid library item", { item });
+        else if (context === "persist") console.warn("[PlayerGuard] blocked invalid persisted item", { item });
+        else if (context === "current") console.warn("[PlayerGuard] blocked invalid current item", { item });
+        return null;
+      }
+      if (context === "history" || context === "library") {
+        console.log("[PlayerGuard] accepted library/history item", { context, source: safe._source || safe.sourceId || null });
+      }
+      return safe;
+    }
+
+    function safeSetCurrentItem(item) {
+      const safe = mustAcceptPlayableItem(item, "current");
+      if (!safe) return false;
+      currentItem = safe;
+      return true;
+    }
+
+    function safePersistLastItem(item) {
+      const safe = mustAcceptPlayableItem(item, "persist");
+      if (!safe) return false;
+      try { localStorage.setItem(STORAGE_KEY_LAST, JSON.stringify(safe)); } catch { }
+      return true;
+    }
+
+    async function safePersistLibrary() {
+      const next = [];
+      for (const it of (Array.isArray(library) ? library : [])) {
+        const safe = mustAcceptPlayableItem(it, "library");
+        if (safe) next.push(safe);
+      }
+      library = next;
+      if (typeof idbSet === "function") await idbSet(STORAGE_KEY_LIBRARY, library);
+    }
+
+    function safePersistHistory() {
+      const next = [];
+      for (const it of (Array.isArray(history) ? history : [])) {
+        const safe = mustAcceptPlayableItem(it, "history");
+        if (safe) next.push(safe);
+      }
+      history = next;
+      saveJsonLS(STORAGE_KEY_HISTORY, history);
+    }
+
+    function safeAddToHistory(item) {
+      const safe = mustAcceptPlayableItem(item, "history");
+      if (!safe || !safe.url) return;
+      if (history.length && history[0].url === safe.url) return;
+      const withTs = { ...safe, playedAt: safe.playedAt || new Date().toISOString() };
+      history.unshift(withTs);
+      if (history.length > 250) history = history.slice(0, 250);
+      safePersistHistory();
+      if (typeof debouncedHistorySync === "function") debouncedHistorySync();
+      renderList(historyList, history, "history");
+      if (currentEntitlements && currentPlan === "free" && !historyLimitPromptShown) {
+        if (history.length >= (currentEntitlements.historyLimit || 200)) {
+          historyLimitPromptShown = true;
+          showOk("History is nearing the free plan limit. Upgrade to RESIDENCY+ for deeper history.");
+          setTimeout(() => { okBox.style.display = "none"; }, 3500);
+        }
       }
     }
 
@@ -3883,7 +3952,10 @@
           setStatus("Unable to play this item.");
           return;
         }
-        currentItem = safeCurrentUploads;
+        if (!safeSetCurrentItem(safeCurrentUploads)) {
+          setStatus("Unable to play this item.");
+          return;
+        }
         clearStatus();
         setStatus(autoplay ? "PLAYING" : "ARMED");
         const titleText = item.title || "—";
@@ -3897,7 +3969,7 @@
         openBtn.dataset.url = uploadsCandidateUrl;
         saveBtn.disabled = false;
         makeStationBtn.disabled = true;
-        try { localStorage.setItem(STORAGE_KEY_LAST, JSON.stringify(safeCurrentUploads)); } catch { }
+        safePersistLastItem(safeCurrentUploads);
         setPill(pillKey, item.keyGuess ? `Key: ${item.keyGuess}` : null);
         setPill(pillBpm, item.bpmGuess ? `BPM: ${item.bpmGuess}` : null);
         setPill(pillLen, item.durationMs ? `Len: ${fmtMs(item.durationMs)}` : null);
@@ -3958,7 +4030,10 @@
         setStatus("Unable to play this item.");
         return;
       }
-      currentItem = safeCurrentSc;
+      if (!safeSetCurrentItem(safeCurrentSc)) {
+        setStatus("Unable to play this item.");
+        return;
+      }
       clearStatus();
       setStatus(autoplay ? "PLAYING" : "ARMED");
 
@@ -3979,7 +4054,7 @@
       saveBtn.disabled = false;
       makeStationBtn.disabled = false;
       openBtn.dataset.url = soundcloudCandidateUrl;
-      try { localStorage.setItem(STORAGE_KEY_LAST, JSON.stringify(safeCurrentSc)); } catch { }
+      safePersistLastItem(safeCurrentSc);
 
       setPill(pillKey, item.keyGuess ? `Key: ${item.keyGuess}` : null);
       setPill(pillBpm, item.bpmGuess ? `BPM: ${item.bpmGuess}` : null);
@@ -4037,13 +4112,17 @@
           widgetPause();
           return;
         }
-        currentItem = safeNextItem;
+        if (!safeSetCurrentItem(safeNextItem)) {
+          setStatus("Unable to play this item.");
+          widgetPause();
+          return;
+        }
 
         // Persist improvements
         const idx = library.findIndex(x => x.url === soundcloudCandidateUrl);
         if (idx !== -1) {
           library[idx] = { ...library[idx], ...currentItem };
-          await idbSet(STORAGE_KEY_LIBRARY, library);
+          await safePersistLibrary();
         }
 
         // Enforce mode durations
@@ -4644,7 +4723,7 @@
         setTimeout(() => { okBox.style.display = "none"; }, 2200);
       };
     }
-    clearHistory.onclick = () => { history = []; saveJsonLS(STORAGE_KEY_HISTORY, history); renderList(historyList, history, "history"); };
+    clearHistory.onclick = () => { history = []; safePersistHistory(); renderList(historyList, history, "history"); };
     copyCrateBtn.onclick = () => copyCrateUrls();
     exportCrateBtn.onclick = () => exportCrate();
 
@@ -5161,11 +5240,16 @@
 
       const fromDb = await idbGet(STORAGE_KEY_LIBRARY);
       if (Array.isArray(fromDb) && fromDb.length) {
-        library = fromDb;
+        const safeFromDb = [];
+        for (const it of fromDb) {
+          const safe = mustAcceptPlayableItem(it, "library");
+          if (safe) safeFromDb.push(safe);
+        }
+        library = safeFromDb;
       } else {
         const safeSeed = [];
         for (const s of SEED_LIBRARY) {
-          const safe = sanitizePlayableItem(s);
+          const safe = mustAcceptPlayableItem(s, "library");
           if (!safe) {
             console.warn("[PlayerGuard] blocked invalid seed item", { item: s });
             continue;
@@ -5173,7 +5257,7 @@
           safeSeed.push(safe);
         }
         library = safeSeed;
-        await idbSet(STORAGE_KEY_LIBRARY, library);
+        await safePersistLibrary();
       }
 
       crate = loadJsonLS(STORAGE_KEY_CRATE, []);
@@ -5738,7 +5822,7 @@
               artworkUrl: reg.artwork_url || null
             };
             const added = typeof addLibraryItemFromNormalized === "function" && addLibraryItemFromNormalized(gen, bucket, "uploads");
-            if (added && typeof idbSet === "function") await idbSet(STORAGE_KEY_LIBRARY, library);
+            if (added) await safePersistLibrary();
             setProdStatus(added ? "Upload complete." : "Upload complete.");
             try {
               if (!Array.isArray(uploadsUsagePanelItems)) uploadsUsagePanelItems = [];
@@ -6468,7 +6552,7 @@
               seen.add(it.url);
             }
             history = merged.slice(-250);
-            saveJsonLS(STORAGE_KEY_HISTORY, history);
+            safePersistHistory();
             renderList(historyList, history, "history");
           }
         } catch { }
