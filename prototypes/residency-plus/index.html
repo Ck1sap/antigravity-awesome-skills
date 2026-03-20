@@ -2124,6 +2124,36 @@
     }
     function widgetPause() { const w = ensureWidget(); try { w && w.pause(); } catch { } }
 
+    function clearCurrentPlaybackState() {
+      currentItem = null;
+
+      try { if (typeof widgetPause === "function") widgetPause(); } catch {}
+
+      try {
+        if (playerFrame) {
+          playerFrame.src = "about:blank";
+          scWidget = null;
+          playerFrame.style.display = "";
+        }
+      } catch {}
+
+      try {
+        const uploadsWrap = document.getElementById("playerUploadsWrap");
+        const uploadsAudio = document.getElementById("playerUploadsAudio");
+        if (uploadsAudio) {
+          uploadsAudio.pause();
+          uploadsAudio.currentTime = 0;
+          uploadsAudio.removeAttribute("src");
+        }
+        if (uploadsWrap) uploadsWrap.style.display = "none";
+      } catch {}
+
+      if (trackTitleEl) trackTitleEl.textContent = "No track selected";
+      if (miniNow) miniNow.textContent = "";
+      if (openBtn) openBtn.disabled = true;
+      if (saveBtn) saveBtn.disabled = true;
+    }
+
     // Source-aware rerender used to prevent nested UI regressions.
     function rerenderCurrentPlayer(autoplay = true, force = false) {
       const item = sanitizePlayableItem(currentItem);
@@ -3001,10 +3031,11 @@
         const ranked = rerankVibeResults(candidates, palette);
         if (!ranked.length) {
           showError("No matches for this vibe yet. Try different words or use Shuffle.");
-          setStatus("READY");
           library = [];
           currentVibeSession = null;
           resetContext();
+          clearCurrentPlaybackState();
+          setStatus("READY");
           return;
         }
         // Adapt candidates into library-style items on the fly
