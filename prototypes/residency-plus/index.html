@@ -3679,7 +3679,7 @@
       try { u = new URL(url); } catch { return false; }
       if (!u || !/^https?:$/.test(u.protocol)) return false;
       const host = (u.hostname || "").toLowerCase();
-      const allowedHosts = new Set(["soundcloud.com", "m.soundcloud.com", "on.soundcloud.com", "api.soundcloud.com", "w.soundcloud.com"]);
+      const allowedHosts = new Set(["soundcloud.com", "m.soundcloud.com", "on.soundcloud.com", "api.soundcloud.com"]);
       return allowedHosts.has(host);
     }
 
@@ -5277,7 +5277,6 @@
       resetContext();
 
       playerFrame.src = "about:blank";
-      rerenderCurrentPlayer(false, true);
       ensureWidget();
 
       try {
