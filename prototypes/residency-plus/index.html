@@ -2066,6 +2066,7 @@
       if (scWidget) return scWidget;
       try {
         if (typeof SC === "undefined") return null;
+        if (!playerFrame?.src?.startsWith("https://w.soundcloud.com/")) return null;
         scWidget = SC.Widget(playerFrame);
         try {
           scWidget.bind && scWidget.bind(SC.Widget.Events.ERROR, () => {
