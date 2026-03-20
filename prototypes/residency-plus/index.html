@@ -5129,13 +5129,17 @@
         productionUploadBtn.onclick = () => { productionUploadInput.click(); };
         productionUploadInput.onchange = async () => {
           const file = productionUploadInput.files && productionUploadInput.files[0];
-          productionUploadInput.value = "";
           let prep = null;
           try {
             if (!file) {
               setProductionUploadBusy(false);
               return;
             }
+
+            // Preserve the selected file for debugging during the async flow.
+            window.__productionUploadDebugFile = file;
+            window.__productionUploadDebugMeta = { name: file.name, type: file.type || null, size: file.size };
+            console.log("[Production][Upload] file selected", { name: file.name, type: file.type || null, size: file.size });
 
             // Now that we have a real file, mark controls as busy.
             setProductionUploadBusy(true);
@@ -5154,6 +5158,7 @@
               setProdStatus("Sign in to upload.");
               return;
             }
+            console.log("[Production][Upload] token ready");
             if (file.size > PROD_UPLOAD_MAX_BYTES) {
               setProdStatus("File too large (max 50 MB).");
               return;
@@ -5165,7 +5170,8 @@
               return;
             }
 
-            setProdStatus("Preparing…");
+            console.log("[Production][Upload] prepare start");
+            setProdStatus("Preparing...");
             prep = await callAuthedFunction("uploads-prepare", "POST", { filename: file.name, mime_type: file.type || null, file_size: file.size }, token);
             if (!prep || !prep.path) {
               setProdStatus(prep && prep.message ? prep.message : "Prepare failed.");
@@ -5175,13 +5181,22 @@
               setProdStatus(prep.message || "Invalid file.");
               return;
             }
+            console.log("[Production][Upload] prepare ok", { path: prep.path });
 
-            setProdStatus("Uploading…");
-            const { error: upErr } = await rplusSupabase.storage.from("uploads").upload(prep.path, file, { contentType: file.type || "audio/mpeg", upsert: true });
+            setProdStatus("Uploading...");
+            console.log("[Production][Upload] storage start", { path: prep.path });
+            const STORAGE_UPLOAD_TIMEOUT_MS = 15000;
+            const storageUploadResp = await Promise.race([
+              rplusSupabase.storage.from("uploads").upload(prep.path, file, { contentType: file.type || "audio/mpeg", upsert: true }),
+              new Promise((_, rej) => setTimeout(() => rej(new Error("storage_upload_timeout")), STORAGE_UPLOAD_TIMEOUT_MS))
+            ]);
+            const { error: upErr } = storageUploadResp;
             if (upErr) {
+              console.log("[Production][Upload] storage failed", { error: upErr?.message || upErr });
               setProdStatus("Upload failed.");
               return;
             }
+            console.log("[Production][Upload] storage ok");
 
             const publicUrl = rplusSupabase.storage.from("uploads").getPublicUrl(prep.path).data.publicUrl;
             let durationMs = null;
@@ -5196,7 +5211,8 @@
               URL.revokeObjectURL(audio.src);
             } catch (_) {}
 
-            setProdStatus("Registering…");
+            console.log("[Production][Upload] register start");
+            setProdStatus("Registering...");
             const rawTitle = (file.name && file.name.replace(/\.[^.]*$/, "").trim()) || "";
             const title = rawTitle || "Untitled";
             const reg = await callAuthedFunction("uploads-register", "POST", {
@@ -5208,10 +5224,12 @@
               artist: ""
             }, token);
             if (!reg || !reg.ok) {
+              console.log("[Production][Upload] register failed", { ok: reg && reg.ok, message: reg && reg.message });
               setProdStatus("Register failed.");
               try { await rplusSupabase.storage.from("uploads").remove([prep.path]); } catch (_) {}
               return;
             }
+            console.log("[Production][Upload] register ok", { id: reg.id || reg.uuid });
 
             const bucket = genreSelect && genreSelect.value && genreSelect.value !== "all" ? genreSelect.value : "other";
             const gen = {
@@ -5229,13 +5247,16 @@
             setProdStatus(added ? "Upload complete." : "Upload complete.");
             setTimeout(() => setProdStatus(""), 3000);
           } catch (e) {
-            console.error("[Production][Upload] error", e);
-            setProdStatus("Upload error.");
+            console.error("[Production][Upload] fatal error", e);
+            if (e && e.message === "storage_upload_timeout") setProdStatus("Upload timed out.");
+            else setProdStatus("Upload failed.");
             if (prep && prep.path) {
               try { await rplusSupabase.storage.from("uploads").remove([prep.path]); } catch (_) {}
             }
           } finally {
             setProductionUploadBusy(false);
+            // Clear the file picker value only after the flow is fully finished.
+            productionUploadInput.value = "";
           }
         };
       }
