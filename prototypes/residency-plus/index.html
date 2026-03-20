@@ -1759,6 +1759,46 @@
       return window.rplusSupabase || null;
     }
 
+    async function getUploadsAccessToken() {
+      const sb = getRplusSupabaseClient();
+      if (AUTH_ENABLED && sb?.auth?.getSession) {
+        try {
+          const sessionResp = await Promise.race([
+            sb.auth.getSession(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 1500))
+          ]);
+          console.log("[Uploads][Auth] getSession ok");
+          const token = sessionResp?.data?.session?.access_token || null;
+          if (token) return token;
+        } catch (e) {
+          if (e && e.message === "timeout") {
+            console.log("[Uploads][Auth] getSession timeout, using localStorage fallback");
+          }
+        }
+      }
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (!key || !key.includes("sb-") || !key.includes("-auth-token")) continue;
+          const raw = localStorage.getItem(key);
+          if (!raw) continue;
+          let parsed = null;
+          try {
+            parsed = JSON.parse(raw);
+          } catch (_) {
+            parsed = null;
+          }
+          const token = parsed?.access_token || parsed?.currentSession?.access_token || parsed?.session?.access_token || null;
+          if (token) {
+            console.log("[Uploads][Auth] localStorage token found");
+            return token;
+          }
+        }
+      } catch (_) {}
+      console.log("[Uploads][Auth] no token available");
+      return null;
+    }
+
     async function getNetlifyToken() {
       console.log("[Uploads] supabase client present", !!window.rplusSupabase);
       const sb = getRplusSupabaseClient();
@@ -1776,9 +1816,9 @@
       }
     }
 
-    async function callAuthedFunction(name, method, body) {
+    async function callAuthedFunction(name, method, body, tokenOverride = null) {
       if (!AUTH_ENABLED || !rplusSupabase) return null;
-      const token = await getNetlifyToken();
+      const token = tokenOverride || await getNetlifyToken();
       if (!token) return null;
       const url = `/.netlify/functions/${name}`;
       const opts = {
@@ -2171,8 +2211,8 @@
       try {
         const url = `/.netlify/functions/search-uploads?q=${encodeURIComponent(q)}&limit=${Math.min(50, limit)}`;
         const opts = { cache: "no-store" };
-        if (PRODUCTION_UPLOADS_ENABLED && typeof getNetlifyToken === "function") {
-          const token = await getNetlifyToken();
+        if (PRODUCTION_UPLOADS_ENABLED && typeof getUploadsAccessToken === "function") {
+          const token = await getUploadsAccessToken();
           if (token) opts.headers = { Authorization: `Bearer ${token}` };
         }
         const r = await fetch(url, opts);
@@ -4748,7 +4788,7 @@
               setStatus("Sign in to upload.");
               return;
             }
-            const token = await getNetlifyToken();
+            const token = await getUploadsAccessToken();
             if (!token) {
               setStatus("Sign in to upload.");
               return;
@@ -4767,7 +4807,7 @@
             let prep = null;
             try {
               setStatus("Preparing…");
-              prep = await callAuthedFunction("uploads-prepare", "POST", { filename: file.name, mime_type: file.type || null, file_size: file.size });
+              prep = await callAuthedFunction("uploads-prepare", "POST", { filename: file.name, mime_type: file.type || null, file_size: file.size }, token);
               if (!prep || !prep.path) {
                 const msg = prep && prep.message ? prep.message : "Prepare failed.";
                 setStatus(msg);
@@ -4810,7 +4850,7 @@
                 mime_type: file.type || null,
                 duration_ms: durationMs,
                 artist: ""
-              });
+              }, token);
               if (!reg || !reg.ok) {
                 setStatus("Register failed. Cleaning up…");
                 try {
@@ -4869,7 +4909,7 @@
             if (labsStatus) labsStatus.textContent = "Searching Labs…";
             labsResults.innerHTML = "";
 
-            const uploadToken = activeSources.includes("uploads") ? await getNetlifyToken() : null;
+            const uploadToken = activeSources.includes("uploads") ? await getUploadsAccessToken() : null;
             const requests = activeSources.map(src => {
               let fnPath = null;
               if (src === "youtube") fnPath = "/.netlify/functions/labs-search-youtube";
@@ -5096,7 +5136,7 @@
             setProdStatus("Upload unavailable right now.");
             return;
           }
-          const token = await getNetlifyToken();
+          const token = await getUploadsAccessToken();
           if (!token) {
             setProdStatus("Sign in to upload.");
             return;
@@ -5115,7 +5155,7 @@
           let prep = null;
           try {
             setProdStatus("Preparing…");
-            prep = await callAuthedFunction("uploads-prepare", "POST", { filename: file.name, mime_type: file.type || null, file_size: file.size });
+            prep = await callAuthedFunction("uploads-prepare", "POST", { filename: file.name, mime_type: file.type || null, file_size: file.size }, token);
             if (!prep || !prep.path) {
               setProdStatus(prep && prep.message ? prep.message : "Prepare failed.");
               setProdUploadBusy(false);
@@ -5155,7 +5195,7 @@
               mime_type: file.type || null,
               duration_ms: durationMs,
               artist: ""
-            });
+            }, token);
             if (!reg || !reg.ok) {
               setProdStatus("Register failed.");
               try { await rplusSupabase.storage.from("uploads").remove([prep.path]); } catch (_) {}
