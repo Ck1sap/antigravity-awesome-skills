@@ -1,116 +1,105 @@
 ---
 name: bdistill-knowledge-extraction
-description: "Extract domain-specific knowledge from open-source LLMs via Ollama. Medical, legal, cybersecurity, finance presets or custom terms. Produces LoRA training data."
-category: ai-training
+description: "Extract structured domain knowledge from AI models in-session or from local open-source models via Ollama. No API key needed."
+category: ai-research
 risk: safe
 source: community
 date_added: "2026-03-20"
 author: FrancyJGLisboa
-tags: [ai, knowledge-extraction, fine-tuning, domain-specific, ollama, mcp]
+tags: [ai, knowledge-extraction, domain-specific, data-moat, mcp, reference-data]
 tools: [claude, cursor, codex, copilot]
 ---
 
 # Knowledge Extraction
 
-Extract niche domain knowledge from open-source models running locally via Ollama. Generates training data for fine-tuning small specialized models.
+Extract structured, quality-scored domain knowledge from any AI model — in-session from closed models (no API key) or locally from open-source models via Ollama.
 
 ## Overview
 
-bdistill's Knowledge Extraction pipeline seeds diverse domain prompts, harvests completions from a local model, mines and quality-scores the results, and exports ChatML training pairs ready for LoRA fine-tuning. Only works with open-source models you run locally — by design.
+bdistill turns your AI subscription sessions into a compounding knowledge base. The agent answers targeted domain questions, bdistill structures and quality-scores the responses, and the output accumulates into a searchable, exportable reference dataset.
+
+Adversarial mode challenges the agent's claims — forcing evidence, corrections, and acknowledged limitations — producing validated knowledge entries.
 
 ## When to Use This Skill
 
-- Use when building a domain-specific chatbot (medical, legal, finance, etc.)
-- Use when creating training data from an open-source model's knowledge
-- Use when comparing what different open models know about your domain
-- Use when preparing data for LoRA fine-tuning a small model
+- Use when you need structured reference data on any domain (medical, legal, finance, cybersecurity)
+- Use when building lookup tables, Q&A datasets, or research corpora
+- Use when generating training data for traditional ML models (regression, classification — NOT competing LLMs)
+- Use when you want cross-model comparison on domain knowledge
 
 ## How It Works
 
-### Step 1: Install prerequisites
+### Step 1: Install
 
 ```bash
 pip install bdistill
-
-# Install and start Ollama
-# macOS: brew install ollama
-# Linux: curl -fsSL https://ollama.com/install.sh | sh
-ollama serve
-
-# Pull a model
-ollama pull qwen3:4b
+claude mcp add bdistill -- bdistill-mcp   # Claude Code
 ```
 
-### Step 2: Add the MCP server
+### Step 2: Extract knowledge in-session
+
+```
+/distill medical cardiology                    # Preset domain
+/distill --custom kubernetes docker helm       # Custom terms
+/distill --adversarial medical                 # With adversarial validation
+```
+
+### Step 3: Search, export, compound
 
 ```bash
-# Claude Code
-claude mcp add bdistill bdistill-mcp
+bdistill kb list                               # Show all domains
+bdistill kb search "atrial fibrillation"       # Keyword search
+bdistill kb export -d medical -f csv           # Export as spreadsheet
+bdistill kb export -d medical -f markdown      # Readable knowledge document
+```
 
-# Cursor / VS Code — copy to your project:
-# .cursor/mcp.json or .vscode/mcp.json
+## Output Format
+
+Structured reference JSONL — not training data:
+
+```json
 {
-  "servers": {
-    "bdistill": {
-      "command": "bdistill-mcp",
-      "args": []
-    }
-  }
+  "question": "What causes myocardial infarction?",
+  "answer": "Myocardial infarction results from acute coronary artery occlusion...",
+  "domain": "medical",
+  "category": "cardiology",
+  "tags": ["mechanistic", "evidence-based"],
+  "quality_score": 0.73,
+  "confidence": 1.08,
+  "validated": true,
+  "source_model": "Claude Sonnet 4"
 }
 ```
 
-### Step 3: Extract knowledge
+## Tabular ML Data Generation
+
+Generate structured training data for traditional ML models:
 
 ```
-/extract                                    # Interactive domain selection
-"Extract medical knowledge from qwen3:4b"   # Natural language
-"Pull cybersecurity knowledge from llama3.2" # Any phrasing works
+/schema sepsis | hr:float, bp:float, temp:float, wbc:float | risk:category[low,moderate,high,critical]
 ```
 
-## Preset Domains
+Exports as CSV ready for pandas/sklearn. Each row tracks source_model for cross-model analysis.
 
-| Domain | Seed terms |
-|--------|-----------|
-| **medical** | cardiology, endocrinology, genetics, critical care, oncology, pharmacology |
-| **legal** | criminal law, contract law, civil procedure, corporate law, constitutional law, IP |
-| **cybersecurity** | vulnerabilities, web security, cryptography, authentication, malware |
-| **finance** | derivatives, fixed income, regulation, risk management, corporate finance |
+## Local Model Extraction (Ollama)
 
-## Custom Domains
+For open-source models running locally:
 
-Any list of terms works — the seeder generates diverse prompts automatically:
+```bash
+# Install Ollama from https://ollama.com
+ollama serve
+ollama pull qwen3:4b
 
+bdistill extract --domain medical --model qwen3:4b
 ```
-"Extract knowledge about kubernetes, docker, and helm from mistral:7b"
-```
-
-## Pipeline
-
-1. **Seeding**: Generates diverse domain prompts from seed terms
-2. **Harvesting**: Runs prompts through the local model, captures completions + embeddings
-3. **Mining**: Extracts knowledge, cleans, deduplicates, quality-scores
-4. **Export**: Produces ChatML training pairs ready for LoRA fine-tuning
-
-## Best Practices
-
-- Start with smaller models (4B-8B) for faster iteration
-- Use preset domains first to validate the pipeline before custom terms
-- Review exported training pairs for quality before fine-tuning
 
 ## Security & Safety Notes
 
-- Only extracts from open-source models running locally via Ollama
+- In-session extraction uses your existing subscription — no additional API keys
+- Local extraction runs entirely on your machine via Ollama
 - No data is sent to external services
-- Extraction runs entirely on your machine
-
-## Common Pitfalls
-
-- **Problem:** Ollama not found
-  **Solution:** Ensure `ollama serve` is running before starting extraction
-
-- **Problem:** Low quality extractions
-  **Solution:** Try a larger model (7B+) or more specific seed terms
+- Output is reference data, not LLM training format
 
 ## Related Skills
 
-- `@bdistill-behavioral-xray` - X-ray a model's behavioral patterns before extraction
+- `@bdistill-behavioral-xray` - X-ray a model's behavioral patterns
