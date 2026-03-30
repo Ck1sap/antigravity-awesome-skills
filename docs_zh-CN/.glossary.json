@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "version": "1.0.11",
+    "version": "1.0.12",
     "created": "2026-03-27",
     "last_updated": "2026-03-27",
-    "total_terms": 123
+    "total_terms": 143
   },
   "terms": {
     "skills": {
@@ -720,6 +720,206 @@
       "translation": "合规",
       "context": "Regulatory or standards compliance",
       "examples": ["compliance audit", "security compliance"]
+    },
+    "positioning": {
+      "translation": "定位",
+      "context": "Market or product positioning strategy",
+      "examples": ["preferred positioning", "market positioning"]
+    },
+    "framing": {
+      "translation": "框架",
+      "context": "How something is presented or structured",
+      "examples": ["key framing", "narrative framing"]
+    },
+    "discovery": {
+      "translation": "发现",
+      "context": "User acquisition or content discovery",
+      "examples": ["GitHub-facing discovery", "content discovery"]
+    },
+    "compatibility": {
+      "translation": "兼容性",
+      "context": "System or tool compatibility",
+      "examples": ["multi-tool compatibility", "backward compatibility"]
+    },
+    "preview": {
+      "translation": "预览",
+      "context": "Preview or sneak peek",
+      "examples": ["social preview", "preview image"]
+    },
+    "SEO": {
+      "translation": "SEO",
+      "context": "Search Engine Optimization - keep as SEO",
+      "examples": ["SEO-focused", "SEO optimization"]
+    },
+    "codename": {
+      "translation": "代号",
+      "context": "Internal project code name",
+      "examples": ["internal codename", "release codename"]
+    },
+    "use case": {
+      "translation": "用例",
+      "context": "Use case or user scenario",
+      "examples": ["user-facing use case", "common use cases"]
+    },
+    "search intent": {
+      "translation": "搜索意图",
+      "context": "User search intent or purpose",
+      "examples": ["search intent", "user intent"]
+    },
+    "cannibalization": {
+      "translation": "蚕食",
+      "context": "Content competing with itself in search",
+      "examples": ["avoid cannibalization", "search cannibalization"]
+    },
+    "artifact": {
+      "translation": "工件",
+      "context": "Generated files or build artifacts",
+      "examples": ["generated artifacts", "build artifacts"]
+    },
+    "refactor": {
+      "translation": "重构",
+      "context": "Code refactoring",
+      "examples": ["structural refactor", "refactor code"]
+    },
+    "rollback": {
+      "translation": "回滚",
+      "context": "Reverting to a previous state",
+      "examples": ["rollback procedure", "rollback changes"]
+    },
+    "merge": {
+      "translation": "合并",
+      "context": "Git merge operation",
+      "examples": ["merge PR", "merge conflict"]
+    },
+    "squash": {
+      "translation": "压缩",
+      "context": "Git squash merge",
+      "examples": ["squash and merge", "squash commits"]
+    },
+    "contribution graph": {
+      "translation": "贡献图",
+      "context": "GitHub contribution graph",
+      "examples": ["contribution graph", "contributions"]
+    },
+    "attribution": {
+      "translation": "署名",
+      "context": "Credit or attribution to contributors",
+      "examples": ["author attribution", "give attribution"]
+    },
+    "conflict": {
+      "translation": "冲突",
+      "context": "Git merge conflict",
+      "examples": ["merge conflict", "resolve conflicts"]
+    },
+    "derived": {
+      "translation": "派生",
+      "context": "Generated from source files",
+      "examples": ["derived artifacts", "derived files"]
+    },
+    "ownership": {
+      "translation": "所有权",
+      "context": "File or code ownership",
+      "examples": ["mixed ownership", "contributor-owned"]
+    },
+    "canonical": {
+      "translation": "规范",
+      "context": "Authoritative or standard version",
+      "examples": ["canonical docs", "canonical source"]
+    },
+    "safety branch": {
+      "translation": "安全分支",
+      "context": "Temporary branch for safe operations",
+      "examples": ["safety branch", "rollback safety"]
+    },
+    "history-rewriting": {
+      "translation": "历史重写",
+      "context": "Git operations that change history",
+      "examples": ["history-rewriting commands", "rewrite Git history"]
+    },
+    "commit": {
+      "translation": "提交",
+      "context": "Git commit",
+      "examples": ["merge commit", "commit changes"]
+    },
+    "coverage": {
+      "translation": "覆盖率",
+      "context": "Percentage or extent of coverage",
+      "examples": ["repository-wide coverage", "test coverage"]
+    },
+    "operational": {
+      "translation": "操作",
+      "context": "Day-to-day operations",
+      "examples": ["operational contributor gate", "operational validator"]
+    },
+    "gate": {
+      "translation": "门槛",
+      "context": "Quality or validation threshold",
+      "examples": ["contributor gate", "quality gate"]
+    },
+    "hardening": {
+      "translation": "加固",
+      "context": "Security or quality hardening",
+      "examples": ["hardening target", "security hardening"]
+    },
+    "legacy": {
+      "translation": "遗留",
+      "context": "Old or inherited code",
+      "examples": ["legacy cleanup", "legacy code"]
+    },
+    "date tracking": {
+      "translation": "日期跟踪",
+      "context": "Tracking dates for skills",
+      "examples": ["date tracking feature", "track creation dates"]
+    },
+    "versioning": {
+      "translation": "版本控制",
+      "context": "Version control or versioning",
+      "examples": ["understanding skill age", "API versioning"]
+    },
+    "changelog": {
+      "translation": "变更日志",
+      "context": "Log of changes",
+      "examples": ["changelog generation", "release changelog"]
+    },
+    "normalization": {
+      "translation": "规范化",
+      "context": "Standardizing format or structure",
+      "examples": ["normalized frontmatter", "data normalization"]
+    },
+    "dangling": {
+      "translation": "悬空",
+      "context": "Broken or orphaned references",
+      "examples": ["dangling links", "dangling references"]
+    },
+    "harvest": {
+      "translation": "丰收",
+      "context": "Collection or gathering phase",
+      "examples": ["PR harvest", "community harvest"]
+    },
+    "cleanup": {
+      "translation": "清理",
+      "context": "Cleaning up code or registry",
+      "examples": ["registry cleanup", "code cleanup"]
+    },
+    "keyword library": {
+      "translation": "关键词库",
+      "context": "Collection of keywords for categorization",
+      "examples": ["keyword libraries", "keyword matching"]
+    },
+    "auto-categorization": {
+      "translation": "自动分类",
+      "context": "Automatic categorization system",
+      "examples": ["intelligent auto-categorization", "auto-categorize"]
+    },
+    "uncategorized": {
+      "translation": "未分类",
+      "context": "Not assigned to a category",
+      "examples": ["uncategorized skills", "remove uncategorized"]
+    },
+    "distribution": {
+      "translation": "分布",
+      "context": "How items are spread across categories",
+      "examples": ["category distribution", "skill distribution"]
     }
   }
 }
