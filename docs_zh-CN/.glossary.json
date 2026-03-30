@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "version": "1.0.5",
+    "version": "1.0.6",
     "created": "2026-03-27",
     "last_updated": "2026-03-27",
-    "total_terms": 58
+    "total_terms": 62
   },
   "terms": {
     "skills": {
@@ -340,6 +340,26 @@
       "translation": "聊天",
       "context": "Chat conversation interface",
       "examples": ["chat workflows", "in chat", "chat interface"]
+    },
+    "coverage": {
+      "translation": "覆盖",
+      "context": "Scope or extent of something",
+      "examples": ["large coverage", "skill coverage"]
+    },
+    "broad": {
+      "translation": "广泛",
+      "context": "Wide scope or comprehensive",
+      "examples": ["broad starting point", "broad coverage"]
+    },
+    "workflow-oriented": {
+      "translation": "工作流导向",
+      "context": "Organized around workflows",
+      "examples": ["workflow-oriented skill", "workflow-oriented approach"]
+    },
+    "task framing": {
+      "translation": "任务框架",
+      "context": "How a task is structured or framed",
+      "examples": ["task framing", "improve task framing"]
     }
   }
 }

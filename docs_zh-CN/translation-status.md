@@ -6,9 +6,9 @@
 ## Summary
 
 - **Total Files:** 68
-- **Completed:** 6
+- **Completed:** 8
 - **In Progress:** 0
-- **Remaining:** 62
+- **Remaining:** 60
 
 ## Progress by Priority
 
@@ -18,11 +18,11 @@
 - [x] users/usage.md
 - [x] users/faq.md
 
-### Priority 2: CLI Integration Guides (4 files)
+### Priority 2: Tool-Specific Guides (4 files)
 - [x] users/claude-code-skills.md
 - [x] users/cursor-skills.md
-- [ ] users/gemini-cli-skills.md
-- [ ] users/codex-cli-skills.md
+- [x] users/gemini-cli-skills.md
+- [x] users/codex-cli-skills.md
 
 ### Priority 3: Advanced User Documentation (17 files)
 - [ ] users/walkthrough.md
@@ -92,14 +92,14 @@
 
 ## Glossary Statistics
 
-- **Total Terms:** 58
+- **Total Terms:** 62
 - **Last Updated:** 2026-03-27
 - **Glossary File:** `.glossary.json`
 
 ## Batch Progress
 
 - **Batch 1 (Priority 1):** Complete - 4/4 files ✓
-- **Batch 2 (Priority 2):** In progress - 2/4 files
+- **Batch 2 (Priority 2):** Complete - 4/4 files ✓
 - **Batch 3 (Priority 3):** Not started - 0/17 files
 - **Batch 4 (Priority 4):** Not started - 0/6 files
 - **Batch 5 (Priority 5):** Not started - 0/35 files
@@ -111,5 +111,6 @@
 - Glossary is built incrementally with each batch
 - Files are checked for broken links and glossary consistency
 - Priority 1 core documentation is now complete ✓
-- Foundation glossary started at 52 terms, now at 58 terms
-- Priority 2: 2/4 files complete (claude-code-skills and cursor-skills)
+- Priority 2 tool-specific guides are now complete ✓
+- Foundation glossary started at 52 terms, now at 62 terms
+- Priority 2: 4/4 files complete ✓
