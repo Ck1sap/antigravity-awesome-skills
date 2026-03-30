@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "version": "1.0.8",
+    "version": "1.0.9",
     "created": "2026-03-27",
     "last_updated": "2026-03-27",
-    "total_terms": 85
+    "total_terms": 110
   },
   "terms": {
     "skills": {
@@ -535,6 +535,136 @@
       "translation": "修复",
       "context": "Repair or fix something broken",
       "examples": ["repair tool", "start the repair"]
+    },
+    "kiro": {
+      "translation": "Kiro",
+      "context": "AWS AI IDE name - keep in English",
+      "examples": ["Kiro CLI", "Kiro integration"]
+    },
+    "symlink": {
+      "translation": "符号链接",
+      "context": "Symbolic link in file system",
+      "examples": ["create symlink", "symbolic link"]
+    },
+    "tier": {
+      "translation": "层级",
+      "context": "Classification level or rank",
+      "examples": ["Tier S skills", "priority tier"]
+    },
+    "expertise": {
+      "translation": "专业知识",
+      "context": "Specialized knowledge or skills",
+      "examples": ["domain expertise", "technical expertise"]
+    },
+    "pattern": {
+      "translation": "模式",
+      "context": "Design or architectural pattern",
+      "examples": ["design patterns", "security patterns"]
+    },
+    "vulnerability": {
+      "translation": "漏洞",
+      "context": "Security vulnerability",
+      "examples": ["security vulnerability", "vulnerability scanner"]
+    },
+    "remediation": {
+      "translation": "修复",
+      "context": "Security remediation or fix",
+      "examples": ["remediation plan", "vulnerability remediation"]
+    },
+    "compliance": {
+      "translation": "合规",
+      "context": "Regulatory compliance",
+      "examples": ["GDPR compliance", "compliance audit"]
+    },
+    "hardening": {
+      "translation": "加固",
+      "context": "Security hardening",
+      "examples": ["security hardening", "system hardening"]
+    },
+    "exploit": {
+      "translation": "利用",
+      "context": "Security exploit or vulnerability exploitation",
+      "examples": ["exploit vulnerability", "security exploit"]
+    },
+    "payload": {
+      "translation": "负载",
+      "context": "Exploit payload or data payload",
+      "examples": ["exploit payload", "data payload"]
+    },
+    "reconnaissance": {
+      "translation": "侦察",
+      "context": "Security reconnaissance phase",
+      "examples": ["passive reconnaissance", "reconnaissance scan"]
+    },
+    "injection": {
+      "translation": "注入",
+      "context": "Code injection or data injection",
+      "examples": ["SQL injection", "code injection"]
+    },
+    "bypass": {
+      "translation": "绕过",
+      "context": "Security bypass",
+      "examples": ["authentication bypass", "security bypass"]
+    },
+    "credential": {
+      "translation": "凭据",
+      "context": "Authentication credentials",
+      "examples": ["user credentials", "credential theft"]
+    },
+    "privilege escalation": {
+      "translation": "权限提升",
+      "context": "Security privilege escalation",
+      "examples": ["privilege escalation vulnerability", "privesc"]
+    },
+    "lateral movement": {
+      "translation": "横向移动",
+      "context": "Network lateral movement in security",
+      "examples": ["lateral movement techniques", "network movement"]
+    },
+    "enumeration": {
+      "translation": "枚举",
+      "context": "Security enumeration or scanning",
+      "examples": ["network enumeration", "service enumeration"]
+    },
+    "exploitation": {
+      "translation": "利用",
+      "context": "Vulnerability exploitation",
+      "examples": ["exploitation phase", "vulnerability exploitation"]
+    },
+    "post-exploitation": {
+      "translation": "利用后",
+      "context": "Post-exploitation activities",
+      "examples": ["post-exploitation activities", "post-exploitation phase"]
+    },
+    "shell": {
+      "translation": "Shell",
+      "context": "Command shell - keep as Shell in code",
+      "examples": ["reverse shell", "shell access"]
+    },
+    "root": {
+      "translation": "root",
+      "context": "Root user or administrator - keep as root in code",
+      "examples": ["root access", "root privileges"]
+    },
+    "container": {
+      "translation": "容器",
+      "context": "Docker/container technology",
+      "examples": ["container orchestration", "Docker container"]
+    },
+    "microservices": {
+      "translation": "微服务",
+      "context": "Microservices architecture",
+      "examples": ["microservices pattern", "microservices architecture"]
+    },
+    "serverless": {
+      "translation": "无服务器",
+      "context": "Serverless computing",
+      "examples": ["serverless architecture", "AWS Lambda"]
+    },
+    "infrastructure": {
+      "translation": "基础设施",
+      "context": "IT infrastructure",
+      "examples": ["cloud infrastructure", "infrastructure as code"]
     }
   }
 }
