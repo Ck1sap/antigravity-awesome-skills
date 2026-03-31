@@ -331,6 +331,7 @@ These skills are continuously reviewed and hardened, but the collection is not "
 - [Tutor Skills](https://github.com/RoundTable02/tutor-skills) - Transform PDFs, docs, and codebases into Obsidian study vaults with interactive quiz-based learning and proficiency tracking.
 - [CoinPaprika & DexPaprika Skills](https://github.com/coinpaprika/skills) - Two crypto data skills: CoinPaprika (12K+ coins, 350+ exchanges, OHLCV, tickers) and DexPaprika (34 chains, 30M+ DEX pools, real-time streaming). Free, no API key. Install: `npx skills add github.com/coinpaprika/skills`
 - [SoulPass](https://github.com/soulpassai/soulpass-skill) - Hardware-secured Solana wallet, trading terminal, and agent identity layer with Jupiter swaps, meme coin trading, DeFi yield, trading bots, encrypted agent-to-agent messaging, and Apple Secure Enclave key storage.
+- [Pro Workflow](https://github.com/rohitg00/pro-workflow) - Self-correcting memory that learns from corrections across 50+ sessions. 17 skills, 6 agents, 16 commands, 23 hooks. Context engineering, parallel worktrees, agent teams. Install: `/plugin marketplace add rohitg00/pro-workflow`
 
 ## Three Real Examples
 
