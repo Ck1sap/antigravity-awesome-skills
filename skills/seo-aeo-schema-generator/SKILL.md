@@ -41,8 +41,8 @@ Part of the [SEO-AEO Engine](https://github.com/mrprewsh/seo-aeo-engine).
 ### Step 1: Recommend Schema Types
 If schema types are not specified, recommend the appropriate types based on the page type. Landing pages get FAQPage + Product + BreadcrumbList. Blog posts get Article + FAQPage + BreadcrumbList.
 
-### Step 2: Load Templates
-Pull the pre-validated JSON-LD template for each requested schema type from `references/`.
+### Step 2: Use Built-In Schema Templates
+Using your knowledge of schema.org and Google's rich result requirements, construct the JSON-LD template for each requested schema type. Use the required and recommended fields listed in the Google Rich Results documentation for that type.
 
 ### Step 3: Populate Fields
 Map all page data to template placeholders. Check every required field against the rich result eligibility rules.
@@ -67,10 +67,7 @@ Write one `<script type="application/ld+json">` block per schema type. Include i
       "name": "What is Syncro?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Syncro is a remote-first project management
-                 platform for distributed engineering teams.
-                 It centralises task tracking, async
-                 communication, and sprint planning in one tool."
+        "text": "Syncro is a remote-first project management platform for distributed engineering teams. It centralises task tracking, async communication, and sprint planning in one tool."
       }
     }
   ]
