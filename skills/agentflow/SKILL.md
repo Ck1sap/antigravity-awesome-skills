@@ -156,8 +156,8 @@ cp agentflow/conventions.md ~/.claude/sdlc/conventions.md
 Or install as a Claude Code plugin:
 
 ```bash
-claude plugin marketplace add UrRhb/agentflow
-claude plugin install agentflow
+/plugin marketplace add UrRhb/agentflow
+/plugin install agentflow
 ```
 
 ## Best Practices
