@@ -9,6 +9,7 @@ const TOOL_SCRIPTS = path.join("tools", "scripts");
 const TOOL_TESTS = path.join(TOOL_SCRIPTS, "tests");
 const LOCAL_TEST_COMMANDS = [
     [path.join(TOOL_TESTS, "activate_skills_shell.test.js")],
+    [path.join(TOOL_TESTS, "activate_skills_batch_smoke.test.js")],
     [path.join(TOOL_TESTS, "activate_skills_batch_security.test.js")],
     [path.join(TOOL_TESTS, "automation_workflows.test.js")],
     [path.join(TOOL_TESTS, "apply_skill_optimization_security.test.js")],
