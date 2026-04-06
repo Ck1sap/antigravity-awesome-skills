@@ -2,7 +2,7 @@
 
 Generated at: 2026-02-08T00:00:00.000Z
 
-Total skills: 1372
+Total skills: 1374
 
 ## architecture (88)
 
@@ -437,7 +437,7 @@ Total skills: 1372
 | `youtube-automation` | Automate YouTube tasks via Rube MCP (Composio): upload videos, manage playlists, search content, get analytics, and handle comments. Always search tools firs... | youtube | youtube, automation, automate, tasks, via, rube, mcp, composio, upload, videos, playlists, search |
 | `zapier-make-patterns` | You are a no-code automation architect who has built thousands of Zaps and Scenarios for businesses of all sizes. You've seen automations that save companies... | zapier, make | zapier, make, no, code, automation, architect, who, built, thousands, zaps, scenarios, businesses |
 
-## development (185)
+## development (186)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -586,6 +586,7 @@ Total skills: 1372
 | `python-packaging` | Comprehensive guide to creating, structuring, and distributing Python packages using modern packaging tools, pyproject.toml, and publishing to PyPI. | python, packaging | python, packaging, creating, structuring, distributing, packages, pyproject, toml, publishing, pypi |
 | `python-patterns` | Python development principles and decision-making. Framework selection, async patterns, type hints, project structure. Teaches thinking, not copying. | python | python, development, principles, decision, making, framework, selection, async, type, hints, structure, teaches |
 | `python-performance-optimization` | Profile and optimize Python code using cProfile, memory profilers, and performance best practices. Use when debugging slow Python code, optimizing bottleneck... | python, performance, optimization | python, performance, optimization, profile, optimize, code, cprofile, memory, profilers, debugging, slow, optimizing |
+| `python-pptx-generator` | Generate complete Python scripts that build polished PowerPoint decks with python-pptx and real slide content. | python, powerpoint, python-pptx, presentations, slide-decks | python, powerpoint, python-pptx, presentations, slide-decks, pptx, generator, generate, complete, scripts, polished, decks |
 | `python-pro` | Master Python 3.12+ with modern features, async programming, performance optimization, and production-ready practices. Expert in the latest Python ecosystem ... | python | python, pro, 12, features, async, programming, performance, optimization, latest, ecosystem, including, uv |
 | `python-testing-patterns` | Implement comprehensive testing strategies with pytest, fixtures, mocking, and test-driven development. Use when writing Python tests, setting up test suites... | python | python, testing, pytest, fixtures, mocking, test, driven, development, writing, tests, setting, up |
 | `react-component-performance` | Diagnose slow React components and suggest targeted performance fixes. | react, component, performance | react, component, performance, diagnose, slow, components, suggest, targeted, fixes |
@@ -627,7 +628,7 @@ Total skills: 1372
 | `zod-validation-expert` | Expert in Zod — TypeScript-first schema validation. Covers parsing, custom errors, refinements, type inference, and integration with React Hook Form, Next.js... | zod, validation | zod, validation, typescript, first, schema, covers, parsing, custom, errors, refinements, type, inference |
 | `zustand-store-ts` | Create Zustand stores following established patterns with proper TypeScript types and middleware. | zustand, store, ts | zustand, store, ts, stores, following, established, proper, typescript, types, middleware |
 
-## general (345)
+## general (346)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -884,6 +885,7 @@ Total skills: 1372
 | `project-skill-audit` | Audit a project and recommend the highest-value skills to add or update. | skill, audit | skill, audit, recommend, highest, value, skills, add, update |
 | `prompt-engineer` | Transforms user prompts into optimized prompts using frameworks (RTF, RISEN, Chain of Thought, RODES, Chain of Density, RACE, RISE, STAR, SOAP, CLEAR, GROW) | prompt-engineering, optimization, frameworks, ai-enhancement | prompt-engineering, optimization, frameworks, ai-enhancement, prompt, engineer, transforms, user, prompts, optimized, rtf, risen |
 | `prompt-library` | A comprehensive collection of battle-tested prompts inspired by [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts) and community best pr... | prompt, library | prompt, library, collection, battle, tested, prompts, inspired, awesome, chatgpt, https, github, com |
+| `protect-mcp-governance` | Agent governance skill for MCP tool calls — Cedar policy authoring, shadow-to-enforce rollout, and Ed25519 receipt verification. | protect, mcp, governance | protect, mcp, governance, agent, skill, calls, cedar, policy, authoring, shadow, enforce, rollout |
 | `qiskit` | Qiskit is the world's most popular open-source quantum computing framework with 13M+ downloads. Build quantum circuits, optimize for hardware, execute on sim... | qiskit | qiskit, world, most, popular, open, source, quantum, computing, framework, 13m, downloads, circuits |
 | `quality-nonconformance` | Codified expertise for quality control, non-conformance investigation, root cause analysis, corrective action, and supplier quality management in regulated m... | quality, nonconformance | quality, nonconformance, codified, expertise, control, non, conformance, investigation, root, cause, analysis, corrective |
 | `readme` | You are an expert technical writer creating comprehensive project documentation. Your goal is to write a README.md that is absurdly thorough—the kind of docu... | readme | readme, technical, writer, creating, documentation, goal, write, md, absurdly, thorough, kind, wish |

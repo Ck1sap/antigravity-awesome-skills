@@ -18969,6 +18969,25 @@
       "runtime_files": []
     },
     {
+      "id": "protect-mcp-governance",
+      "path": "skills/protect-mcp-governance",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "protocol-reverse-engineering",
       "path": "skills/protocol-reverse-engineering",
       "targets": {
@@ -19142,6 +19161,25 @@
     {
       "id": "python-performance-optimization",
       "path": "skills/python-performance-optimization",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "python-pptx-generator",
+      "path": "skills/python-pptx-generator",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -26230,10 +26268,10 @@
     }
   ],
   "summary": {
-    "total_skills": 1372,
+    "total_skills": 1374,
     "supported": {
-      "codex": 1343,
-      "claude": 1358
+      "codex": 1345,
+      "claude": 1360
     },
     "blocked": {
       "codex": 29,

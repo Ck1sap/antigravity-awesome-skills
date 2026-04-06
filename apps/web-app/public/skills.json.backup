@@ -21871,6 +21871,28 @@
     }
   },
   {
+    "id": "protect-mcp-governance",
+    "path": "skills/protect-mcp-governance",
+    "category": "uncategorized",
+    "name": "protect-mcp-governance",
+    "description": "Agent governance skill for MCP tool calls \u2014 Cedar policy authoring, shadow-to-enforce rollout, and Ed25519 receipt verification.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-05",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "protocol-reverse-engineering",
     "path": "skills/protocol-reverse-engineering",
     "category": "security",
@@ -22077,6 +22099,28 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "python-pptx-generator",
+    "path": "skills/python-pptx-generator",
+    "category": "development",
+    "name": "python-pptx-generator",
+    "description": "Generate complete Python scripts that build polished PowerPoint decks with python-pptx and real slide content.",
+    "risk": "safe",
+    "source": "self",
+    "date_added": "2026-04-06",
     "plugin": {
       "targets": {
         "codex": "supported",
