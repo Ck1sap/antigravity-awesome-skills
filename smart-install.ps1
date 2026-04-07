@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Smart Antigravity Skills Installer - detects AI tools and installs only what you have.
 
@@ -40,12 +40,12 @@ $RepoRoot = $PSScriptRoot
 # ====================================================================
 # OS + SHELL DETECTION
 # ====================================================================
-$isWindows = ($env:OS -eq "Windows_NT") -or ($PSVersionTable.Platform -eq "Win32NT")
-$isMac     = (-not $isWindows) -and ((uname -s 2>$null) -eq "Darwin")
-$isLinux   = (-not $isWindows) -and (-not $isMac)
+$isWindowsOS = ($env:OS -eq "Windows_NT") -or ($PSVersionTable.Platform -eq "Win32NT")
+$isMac = (-not $isWindowsOS) -and ((uname -s 2>$null) -eq "Darwin")
+$isLinuxOS = (-not $isWindowsOS) -and (-not $isMac)
 
 # Normalize home directory across platforms
-$UserHome = if ($isWindows) { $env:USERPROFILE } else { $env:HOME }
+$UserHome = if ($isWindowsOS) { $env:USERPROFILE } else { $env:HOME }
 
 # Detect parent shell (CMD vs PowerShell vs other)
 $parentShell = "Unknown"
@@ -54,7 +54,8 @@ try {
     if ($ppid) {
         $parentShell = (Get-Process -Id $ppid -ErrorAction SilentlyContinue).ProcessName
     }
-} catch { $parentShell = "Unknown" }
+}
+catch { $parentShell = "Unknown" }
 
 # ====================================================================
 # Helper: Format section header
@@ -71,10 +72,10 @@ function Write-Header {
 # ====================================================================
 # Helper: Status lines
 # ====================================================================
-function Write-Found   { param([string]$msg) Write-Host "  [OK] $msg" -ForegroundColor Green  }
+function Write-Found { param([string]$msg) Write-Host "  [OK] $msg" -ForegroundColor Green }
 function Write-Missing { param([string]$msg) Write-Host "  [--] $msg" -ForegroundColor DarkGray }
-function Write-Warn    { param([string]$msg) Write-Host "  [!!] $msg" -ForegroundColor Yellow }
-function Write-Info    { param([string]$msg) Write-Host "  [ ] $msg"  -ForegroundColor Gray   }
+function Write-Warn { param([string]$msg) Write-Host "  [!!] $msg" -ForegroundColor Yellow }
+function Write-Info { param([string]$msg) Write-Host "  [ ] $msg"  -ForegroundColor Gray }
 
 # ====================================================================
 # AUTO-DETECTION
@@ -82,23 +83,30 @@ function Write-Info    { param([string]$msg) Write-Host "  [ ] $msg"  -Foregroun
 Write-Header "Antigravity Skills - Smart Installer"
 
 # OS info
-if ($isWindows) {
+if ($isWindowsOS) {
     $osVer = [System.Environment]::OSVersion.Version
     Write-Info "OS:    Windows $($osVer.Major).$($osVer.Minor) (build $($osVer.Build))"
-} elseif ($isMac) {
+}
+elseif ($isMac) {
     $macVer = (sw_vers -productVersion 2>$null)
     Write-Info "OS:    macOS $macVer"
-} else {
+}
+elseif ($isLinuxOS) {
     $linuxVer = (uname -r 2>$null)
     Write-Info "OS:    Linux $linuxVer"
+}
+else {
+    Write-Info "OS:    Unknown"
 }
 
 # Shell info
 if ($parentShell -like "cmd") {
     Write-Warn "Shell: CMD  (tip: re-run from PowerShell for best results)"
-} elseif ($parentShell -match "^(pwsh|powershell)$") {
+}
+elseif ($parentShell -match "^(pwsh|powershell)$") {
     Write-Info "Shell: PowerShell  (ideal)"
-} elseif ($parentShell -ne "Unknown") {
+}
+elseif ($parentShell -ne "Unknown") {
     Write-Info "Shell: $parentShell"
 }
 
@@ -108,23 +116,25 @@ Write-Host ""
 $detected = [ordered]@{}
 
 # --- Claude Desktop / Claude Code ---------------------------------
-$claudeConfig  = if ($isWindows) { Join-Path $env:APPDATA "Claude" } else { Join-Path $UserHome ".config/Claude" }
+$claudeConfig = if ($isWindowsOS) { Join-Path $env:APPDATA "Claude" } elseif ($isMac) { Join-Path $UserHome "Library/Application Support/Claude" } else { Join-Path $UserHome ".config/Claude" }
 $claudeDataDir = Join-Path $UserHome ".claude"
-$claudeCmd     = Get-Command "claude" -ErrorAction SilentlyContinue
+$claudeCmd = Get-Command "claude" -ErrorAction SilentlyContinue
 if ($claudeCmd -or (Test-Path $claudeConfig) -or (Test-Path $claudeDataDir)) {
     $detected["claude"] = $true
     Write-Found "Claude Code/Desktop  (~/.claude)"
-} else {
+}
+else {
     Write-Missing "Claude Code/Desktop"
 }
 
 # --- Cursor -------------------------------------------------------
-$cursorConfig = if ($isWindows) { Join-Path $env:APPDATA "Cursor" } else { Join-Path $UserHome ".cursor" }
-$cursorCmd    = Get-Command "cursor" -ErrorAction SilentlyContinue
+$cursorConfig = if ($isWindowsOS) { Join-Path $env:APPDATA "Cursor" } elseif ($isMac) { Join-Path $UserHome "Library/Application Support/Cursor" } else { Join-Path $UserHome ".cursor" }
+$cursorCmd = Get-Command "cursor" -ErrorAction SilentlyContinue
 if ($cursorCmd -or (Test-Path $cursorConfig)) {
     $detected["cursor"] = $true
     Write-Found "Cursor AI  ($cursorConfig)"
-} else {
+}
+else {
     Write-Missing "Cursor AI"
 }
 
@@ -132,10 +142,11 @@ if ($cursorCmd -or (Test-Path $cursorConfig)) {
 $geminiCmd = Get-Command "gemini" -ErrorAction SilentlyContinue
 $geminiDir = Join-Path $UserHome ".gemini"
 if ($geminiCmd -or (Test-Path $geminiDir)) {
-    $detected["gemini"]     = $true
+    $detected["gemini"] = $true
     $detected["antigravity"] = $true    # always bundle antigravity with gemini
     Write-Found "Gemini CLI  (~/.gemini)"
-} else {
+}
+else {
     Write-Missing "Gemini CLI"
 }
 
@@ -145,7 +156,8 @@ $codexDir = Join-Path $UserHome ".codex"
 if ($codexCmd -or (Test-Path $codexDir)) {
     $detected["codex"] = $true
     Write-Found "OpenAI Codex  (~/.codex)"
-} else {
+}
+else {
     Write-Missing "OpenAI Codex"
 }
 
@@ -155,7 +167,8 @@ $kiroDir = Join-Path $UserHome ".kiro"
 if ($kiroCmd -or (Test-Path $kiroDir)) {
     $detected["kiro"] = $true
     Write-Found "Kiro  (~/.kiro)"
-} else {
+}
+else {
     Write-Missing "Kiro"
 }
 
@@ -164,21 +177,23 @@ $openCodeCmd = Get-Command "opencode" -ErrorAction SilentlyContinue
 if ($openCodeCmd) {
     $detected["opencode"] = $true
     Write-Found "OpenCode"
-} else {
+}
+else {
     Write-Missing "OpenCode"
 }
 
 # --- VS Code + GitHub Copilot Chat --------------------------------
-$vsCodeExt = Join-Path $UserHome ".vscode" "extensions"
+$vsCodeExt = Join-Path (Join-Path $UserHome ".vscode") "extensions"
 $hasCopilot = $false
 if (Test-Path $vsCodeExt) {
     $hasCopilot = @(Get-ChildItem $vsCodeExt -Directory -ErrorAction SilentlyContinue |
-                   Where-Object { $_.Name -like "github.copilot-chat*" }).Count -gt 0
+        Where-Object { $_.Name -like "github.copilot-chat*" }).Count -gt 0
 }
 if ($hasCopilot) {
     $detected["vscode"] = $true
     Write-Found "VS Code + GitHub Copilot Chat"
-} else {
+}
+else {
     Write-Missing "VS Code + GitHub Copilot Chat"
 }
 
@@ -199,31 +214,31 @@ if ($detected.Count -eq 0) {
 Write-Header "Install Plan"
 
 $flags = @()
-$plan  = @()
+$plan = @()
 
 if ($detected.Contains("claude")) {
     $flags += "--claude"
-    $plan  += "  Claude skills  ->  ~/.claude/skills/"
+    $plan += "  Claude skills  ->  ~/.claude/skills/"
 }
 if ($detected.Contains("cursor")) {
     $flags += "--cursor"
-    $plan  += "  Cursor skills  ->  ~/.cursor/skills/"
+    $plan += "  Cursor skills  ->  ~/.cursor/skills/"
 }
 if ($detected.Contains("gemini")) {
     $flags += "--gemini"
-    $plan  += "  Gemini skills  ->  ~/.gemini/skills/"
+    $plan += "  Gemini skills  ->  ~/.gemini/skills/"
 }
 if ($detected.Contains("antigravity")) {
     $flags += "--antigravity"
-    $plan  += "  Antigravity    ->  ~/.gemini/antigravity/skills/"
+    $plan += "  Antigravity    ->  ~/.gemini/antigravity/skills/"
 }
 if ($detected.Contains("codex")) {
     $flags += "--codex"
-    $plan  += "  Codex skills   ->  ~/.codex/skills/"
+    $plan += "  Codex skills   ->  ~/.codex/skills/"
 }
 if ($detected.Contains("kiro")) {
     $flags += "--kiro"
-    $plan  += "  Kiro skills    ->  ~/.kiro/skills/"
+    $plan += "  Kiro skills    ->  ~/.kiro/skills/"
 }
 
 # OpenCode uses --path to a project-level directory
@@ -263,12 +278,12 @@ $toolPaths = @{
 
 # Auto-detect: git pull for already-installed dirs, fresh npx for new ones
 $installFlags = [System.Collections.Generic.List[string]]::new()
-$updatePaths  = @{}   # flag -> path, preserved for npx fallback
+$updatePaths = @{}   # flag -> path, preserved for npx fallback
 
 foreach ($flag in $flags) {
     $toolKey = $flag.TrimStart("-")
     if ($toolPaths.ContainsKey($toolKey)) {
-        $tPath  = $toolPaths[$toolKey]
+        $tPath = $toolPaths[$toolKey]
         $gitDir = Join-Path $tPath ".git"
         if ((Test-Path $tPath) -and (Test-Path $gitDir)) {
             $updatePaths[$flag] = $tPath
@@ -304,7 +319,7 @@ if ($DryRun) {
 if (-not $Force) {
     Write-Host ""
     $verb = if ($installFlags.Count -gt 0 -and $updatePaths.Count -gt 0) { "install and update" } `
-            elseif ($updatePaths.Count -gt 0) { "update" } else { "install" }
+        elseif ($updatePaths.Count -gt 0) { "update" } else { "install" }
     $answer = Read-Host "  Proceed with ${verb}? [Y/n]"
     if ($answer -match "^[nN]") {
         Write-Host "  Cancelled." -ForegroundColor Yellow
@@ -328,7 +343,8 @@ if ($installFlags.Count -gt 0) {
         Push-Location $RepoRoot
         & npx antigravity-awesome-skills install @allArgs
         if ($LASTEXITCODE -ne 0) { throw "npx installer exited with code $LASTEXITCODE" }
-    } finally {
+    }
+    finally {
         Pop-Location
     }
 
@@ -350,15 +366,18 @@ if ($updatePaths.Count -gt 0) {
                 $summary = ($pullOut | Select-Object -Last 1).Trim()
                 if ($summary -eq "Already up to date.") {
                     Write-Info "  Already up to date."
-                } else {
+                }
+                else {
                     Write-Found "  Updated: $summary"
                 }
-            } else {
-                Write-Warn "  git pull failed for: $uPath — queuing for npx re-install."
+            }
+            else {
+                Write-Warn "  git pull failed for: $uPath -- queuing for npx re-install."
                 $fallbackFlags.Add($uFlag)
             }
-        } catch {
-            Write-Warn "  Git error for ${uPath}: $_ — queuing for npx re-install."
+        }
+        catch {
+            Write-Warn "  Git error for ${uPath}: $_ -- queuing for npx re-install."
             $fallbackFlags.Add($uFlag)
         }
     }
@@ -374,7 +393,8 @@ if ($updatePaths.Count -gt 0) {
             Push-Location $RepoRoot
             & npx antigravity-awesome-skills install @fbArgs
             if ($LASTEXITCODE -ne 0) { throw "npx fallback installer exited with code $LASTEXITCODE" }
-        } finally {
+        }
+        finally {
             Pop-Location
         }
         Write-Found "Fallback re-install completed."
@@ -398,7 +418,8 @@ if ($detected.Contains("opencode")) {
         if ($Risk -ne "all") { $ocArgs.Add("--risk"); $ocArgs.Add($Risk) }
         & npx antigravity-awesome-skills install @ocArgs
         if ($LASTEXITCODE -ne 0) { throw "OpenCode installer exited with code $LASTEXITCODE" }
-    } finally {
+    }
+    finally {
         Pop-Location
     }
 
@@ -458,7 +479,8 @@ Skills sourced from: https://github.com/luandro/antigravity-awesome-skills
     $existingVs = if (Test-Path $vsFile) { [System.IO.File]::ReadAllText($vsFile) } else { $null }
     if ($existingVs -eq $instructionsContent) {
         Write-Info "VS Code instructions unchanged: $vsFile"
-    } else {
+    }
+    else {
         [System.IO.File]::WriteAllText($vsFile, $instructionsContent, [System.Text.Encoding]::UTF8)
         $vsVerb = if ($null -eq $existingVs) { "created" } else { "updated" }
         Write-Found "VS Code instructions $vsVerb`: $vsFile"
@@ -468,8 +490,8 @@ Skills sourced from: https://github.com/luandro/antigravity-awesome-skills
 # ====================================================================
 # CLAUDE AGENTS - copy from repo agents/ directory
 # ====================================================================
-$agentsDir     = Join-Path $RepoRoot "agents"
-$claudeAgents  = Join-Path $UserHome ".claude" "agents"
+$agentsDir = Join-Path $RepoRoot "agents"
+$claudeAgents = Join-Path (Join-Path $UserHome ".claude") "agents"
 
 if ($detected.Contains("claude") -and (Test-Path $agentsDir)) {
     Write-Header "Claude Sub-Agents"
@@ -485,12 +507,14 @@ if ($detected.Contains("claude") -and (Test-Path $agentsDir)) {
             if ($srcHash -eq $dstHash) {
                 Write-Info "  Unchanged: $($file.Name)"
                 $agSkipped++
-            } else {
+            }
+            else {
                 Copy-Item $file.FullName $dest -Force
                 Write-Found "  Updated:   $($file.Name)"
                 $agUpdated++
             }
-        } else {
+        }
+        else {
             Copy-Item $file.FullName $dest -Force
             Write-Found "  Added:     $($file.Name)"
             $agAdded++
@@ -499,7 +523,8 @@ if ($detected.Contains("claude") -and (Test-Path $agentsDir)) {
 
     if ($agentFiles.Count -eq 0) {
         Write-Warn "No .md agent files found in $agentsDir"
-    } else {
+    }
+    else {
         Write-Info "  Agents: $agAdded added, $agUpdated updated, $agSkipped unchanged"
     }
 }
@@ -510,7 +535,7 @@ if ($detected.Contains("claude") -and (Test-Path $agentsDir)) {
 Write-Header "Cleanup"
 
 # 1. Temp dirs created by the npx package during cloning (ag-skills-*)
-$tmpRoot = if ($isWindows) { $env:TEMP } else { "/tmp" }
+$tmpRoot = if ($isWindowsOS) { $env:TEMP } else { "/tmp" }
 $tempClones = Get-ChildItem $tmpRoot -Filter "ag-skills-*" -Directory -ErrorAction SilentlyContinue
 $cleanedTmp = 0
 foreach ($dir in $tempClones) {
@@ -518,7 +543,8 @@ foreach ($dir in $tempClones) {
         Remove-Item $dir.FullName -Recurse -Force -ErrorAction Stop
         Write-Info "  Removed temp clone: $($dir.FullName)"
         $cleanedTmp++
-    } catch {
+    }
+    catch {
         Write-Warn "  Could not remove $($dir.FullName): $_"
     }
 }
@@ -526,9 +552,10 @@ if ($cleanedTmp -eq 0) { Write-Info "  No temp clone dirs found." }
 
 # 2. npm cache for the antigravity package
 try {
-    $npmCacheOut = & npm cache clean --force 2>&1
+    & npm cache clean --force 2>&1 | Out-Null
     Write-Info "  npm cache cleared."
-} catch {
+}
+catch {
     Write-Warn "  npm cache clean skipped (npm not on PATH or failed): $_"
 }
 
@@ -553,7 +580,8 @@ try {
             if ($cleanedNpx -eq 0) { Write-Info "  No npx cache entries for antigravity-awesome-skills." }
         }
     }
-} catch {
+}
+catch {
     Write-Warn "  npx cache cleanup skipped: $_"
 }
 
