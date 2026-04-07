@@ -169,7 +169,7 @@ if ($openCodeCmd) {
 }
 
 # --- VS Code + GitHub Copilot Chat --------------------------------
-$vsCodeExt = Join-Path $UserHome ".vscode\extensions"
+$vsCodeExt = Join-Path $UserHome ".vscode" "extensions"
 $hasCopilot = $false
 if (Test-Path $vsCodeExt) {
     $hasCopilot = @(Get-ChildItem $vsCodeExt -Directory -ErrorAction SilentlyContinue |
@@ -469,7 +469,7 @@ Skills sourced from: https://github.com/luandro/antigravity-awesome-skills
 # CLAUDE AGENTS - copy from repo agents/ directory
 # ====================================================================
 $agentsDir     = Join-Path $RepoRoot "agents"
-$claudeAgents  = Join-Path $UserHome ".claude\agents"
+$claudeAgents  = Join-Path $UserHome ".claude" "agents"
 
 if ($detected.Contains("claude") -and (Test-Path $agentsDir)) {
     Write-Header "Claude Sub-Agents"
