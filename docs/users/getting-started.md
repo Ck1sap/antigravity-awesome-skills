@@ -26,7 +26,25 @@ If you prefer a marketplace-style install for **Claude Code** or **Codex**, use 
 
 ### 1. Install the Repo
 
-**Option A — npx (easiest):**
+**Option A — Smart installer (recommended):**
+
+Clone the repo once and run the included installer. It detects which AI tools you have (Claude, Cursor, Gemini CLI, Codex, Kiro, OpenCode, VS Code + Copilot) and installs skills only for those tools — nothing lands somewhere you didn’t ask for.
+
+```powershell
+git clone https://github.com/sickn33/antigravity-awesome-skills.git
+cd antigravity-awesome-skills
+.\smart-install.ps1 -DryRun    # preview what will happen
+.\smart-install.ps1             # install for real
+```
+
+- Works on Windows, macOS, and Linux (PowerShell Core).
+- **Re-run safe:** re-running the script is always the right thing to do — it updates existing installs via `git pull`, installs only newly-detected tools, and if `git pull` fails for any tool it automatically falls back to a fresh npx install for that tool. No flags needed.
+- Claude users also receive 11 purpose-built sub-agents copied to `~/.claude/agents/` automatically (skipped on re-run if files haven't changed).
+- VS Code + Copilot users get `~/.vscode/instructions/antigravity-skills.instructions.md` written with curated skill coverage (skipped on re-run if unchanged).
+- Pass `-Risk low` or `-Risk low-medium` to restrict which skill categories are installed; omit `-Risk` (or pass `-Risk all`) for the full library.
+- **Auto-cleanup:** after every install the script removes any temporary clone directories from `$env:TEMP` and clears the npm/npx cache for the package — no leftover 30 MB clones.
+
+**Option B — npx (fastest single command):**
 
 ```bash
 npx antigravity-awesome-skills
@@ -37,7 +55,7 @@ The installer uses a shallow clone by default so you get the current library wit
 
 If you see a 404 error, use: `npx github:sickn33/antigravity-awesome-skills`
 
-**Option B — git clone:**
+**Option C — git clone (manual):**
 
 ```bash
 # Universal (works for most agents)
@@ -109,7 +127,7 @@ Once installed, just talk to your AI naturally.
 | **Cursor**      | ✅ Native       | `.cursor/skills/`                                                     |
 | **OpenCode**    | ✅ Full Support | `.agents/skills/` (prefer reduced installs with `--risk`, `--category`, or `--tags`) |
 | **AdaL CLI**    | ✅ Full Support | `.adal/skills/`                                                       |
-| **Copilot**     | ⚠️ Text Only    | Manual copy-paste                                                     |
+| **Copilot**     | ✅ Full Support | `.github/.copilot-instructions.md` (written by `smart-install.ps1`)   |
 
 ---
 

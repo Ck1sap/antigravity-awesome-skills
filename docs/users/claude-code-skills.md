@@ -20,13 +20,26 @@ Install the library into Claude Code, then invoke focused skills directly in the
 
 ## Install Claude Code Skills
 
-### Option A: installer CLI
+### Option A: smart installer (recommended)
+
+Clone the repo and run the included installer — it detects Claude automatically, copies skills to `~/.claude/skills/`, and copies all 11 sub-agents to `~/.claude/agents/` in a single pass:
+
+```powershell
+git clone https://github.com/sickn33/antigravity-awesome-skills.git
+cd antigravity-awesome-skills
+.\smart-install.ps1 -DryRun   # preview
+.\smart-install.ps1            # install
+```
+
+Re-running is always safe — it uses `git pull` for existing installs and only runs a fresh install for newly-detected tools. Temp clones and npm cache are cleaned up automatically when done.
+
+### Option B: installer CLI (npx)
 
 ```bash
 npx antigravity-awesome-skills --claude
 ```
 
-### Option B: Claude Code plugin marketplace
+### Option C: Claude Code plugin marketplace
 
 ```text
 /plugin marketplace add sickn33/antigravity-awesome-skills
@@ -42,6 +55,54 @@ You can also install a focused bundle plugin instead of the root plugin when you
 ```bash
 test -d .claude/skills || test -d ~/.claude/skills
 ```
+
+---
+
+## Claude Code Sub-agents
+
+The repository ships 11 ready-to-use sub-agent definitions in the `agents/` directory. These are purpose-built agents that Claude Code can delegate to as specialized workers — each focused on a single engineering discipline.
+
+| Agent | Role |
+|---|---|
+| `architect` | System design and architectural decisions |
+| `api-designer` | REST and GraphQL API design and review |
+| `code-reviewer` | Pull request and code quality review |
+| `debugger` | Systematic bug and root-cause investigation |
+| `security-auditor` | Security-focused code and infrastructure review |
+| `test-writer` | Unit, integration, and E2E test generation |
+| `devops` | CI/CD, Docker, Kubernetes, and infrastructure |
+| `docs-writer` | Documentation, READMEs, and technical writing |
+| `performance-optimizer` | Profiling, benchmarks, and optimization |
+| `refactorer` | Code cleanup and structural improvements |
+| `data-engineer` | Data pipelines, ETL, and SQL design |
+
+### Install sub-agents automatically
+
+Run `smart-install.ps1` — when it detects Claude, it copies all 11 agents to `~/.claude/agents/` as part of the same install pass.
+
+### Install sub-agents manually
+
+```bash
+# macOS / Linux
+cp agents/*.md ~/.claude/agents/
+
+# Windows (PowerShell)
+Copy-Item agents\*.md $HOME\.claude\agents\
+```
+
+### Invoke a sub-agent
+
+```text
+Use the @security-auditor agent to review my authentication flow.
+
+Use the @architect agent to design a data layer for this feature.
+
+Use the @test-writer agent to add coverage for src/billing/.
+```
+
+The sub-agent handles the task autonomously within its domain and passes results back to your main conversation.
+
+---
 
 ## Best starter skills for Claude Code
 

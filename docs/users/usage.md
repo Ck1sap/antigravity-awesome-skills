@@ -12,11 +12,19 @@ If you came in through a **Claude Code** or **Codex** plugin instead of a full l
 
 ### What You Just Did
 
-When you ran `npx antigravity-awesome-skills` or cloned the repository, you:
+Depending on how you installed, one of the following happened:
 
-✅ **Downloaded 1,377+ skill files** to your computer (default: `~/.gemini/antigravity/skills/`; or a custom path like `~/.agent/skills/` if you used `--path`)  
-✅ **Made them available** to your AI assistant  
-❌ **Did NOT enable them all automatically** (they're just sitting there, waiting)
+**If you ran `smart-install.ps1`:**
+✅ **Auto-detected your tools** (Claude, Cursor, Gemini CLI, Codex, Kiro, OpenCode, VS Code + Copilot)  
+✅ **Installed skills only where your tools live** — nothing goes to paths you don't use  
+✅ **Claude users:** 11 sub-agents were copied to `~/.claude/agents/` and are ready to invoke  
+✅ **VS Code + Copilot users:** `~/.vscode/instructions/antigravity-skills.instructions.md` was written with curated skill coverage  
+✅ **Cleanup ran automatically:** temp clone dirs and npm/npx cache for the package were cleared  
+❌ **Did NOT enable every skill automatically** — you still pick which ones to use per task
+
+**If you ran `npx antigravity-awesome-skills` or cloned manually:**
+✅ **Downloaded 1,377+ skill files** to your computer (default: `~/.gemini/antigravity/skills/`; or a custom path like `~/.agent/skills/` if you used `--path`)  ✅ **Made them available** to your AI assistant  
+❌ **Did NOT enable them all automatically** (they’re just sitting there, waiting)
 
 Think of it like installing a toolbox. You have all the tools now, but you need to **pick which ones to use** for each job.
 

@@ -54,7 +54,34 @@ You can use this repo to install a broad multi-tool skill library, start from ro
 
 Most users should start with the full library install and use bundles or workflows to narrow down what to try first.
 
-### Full library install
+### Smart installer (recommended — Windows, macOS, Linux)
+
+Clone the repository and run the included smart installer. It auto-detects which AI tools you have installed and only deploys skills where they are needed — no wasted disk space, no manual flag hunting.
+
+```powershell
+# Windows (PowerShell)
+git clone https://github.com/sickn33/antigravity-awesome-skills.git
+cd antigravity-awesome-skills
+.\smart-install.ps1 -DryRun   # preview first
+.\smart-install.ps1            # install for real
+```
+
+**What the smart installer does:**
+
+- Detects Claude Code/Desktop, Cursor, Gemini CLI, Codex, Kiro, OpenCode, and VS Code + GitHub Copilot automatically
+- Installs skills only to the tools it finds (skips tools you don't have)
+- On Claude: also copies 11 ready-to-use sub-agents into `~/.claude/agents/`
+- On VS Code + Copilot: writes a `.instructions.md` that activates skill coverage automatically
+- Supports `-DryRun` (preview), `-Force` (no prompt), and `-Risk low|low-medium|all` flags — applied uniformly to every target (Claude, Gemini, Codex, Kiro, OpenCode, etc.)
+- The Install Plan shown before confirmation displays the actual risk level for each target so you can verify before proceeding
+- **Re-run safe:** automatically detects what's already installed — runs `git pull` for existing skill dirs, fresh install only for newly-detected tools, and if `git pull` fails it re-installs that tool via npx automatically. Just re-run the script.
+- Cross-platform: works on Windows, macOS, and Linux (PowerShell 7+ on Mac/Linux)
+
+```powershell
+.\smart-install.ps1 -Force -Risk low    # safe skills only, no prompt
+```
+
+### Full library install (manual)
 
 ```bash
 # Default: ~/.gemini/antigravity/skills (Antigravity global). Use --path for other locations.
@@ -77,6 +104,7 @@ Use @brainstorming to plan a SaaS MVP.
 
 ### Prefer plugins for Claude Code or Codex?
 
+- Use the smart installer when you want everything set up automatically in one step.
 - Use the full library install when you want the broadest catalog and direct control over your installed skills directory.
 - Use the plugin route when you want a marketplace-style, plugin-safe distribution for Claude Code or Codex.
 - Read [Plugins for Claude Code and Codex](docs/users/plugins.md) for the full breakdown of full-library install vs plugin install vs bundle plugins.
@@ -85,8 +113,11 @@ Use @brainstorming to plan a SaaS MVP.
 
 Use the same repository, but install or invoke it in the way your host expects.
 
+> **Quickest path:** `git clone` the repo and run `smart-install.ps1` — it detects all your tools automatically and handles everything below in one step.
+
 | Tool           | Install                                                                  | First Use                                              |
 | -------------- | ------------------------------------------------------------------------ | ------------------------------------------------------ |
+| **All tools**  | `git clone` + `.\smart-install.ps1` (auto-detects)                   | _See detected plan in terminal output_               |
 | Claude Code    | `npx antigravity-awesome-skills --claude` or Claude plugin marketplace | `>> /brainstorming help me plan a feature`           |
 | Cursor         | `npx antigravity-awesome-skills --cursor`                              | `@brainstorming help me plan a feature`              |
 | Gemini CLI     | `npx antigravity-awesome-skills --gemini`                              | `Use brainstorming to plan a feature`                |
@@ -94,7 +125,7 @@ Use the same repository, but install or invoke it in the way your host expects.
 | Antigravity    | `npx antigravity-awesome-skills --antigravity`                         | `Use @brainstorming to plan a feature`               |
 | Kiro CLI       | `npx antigravity-awesome-skills --kiro`                                | `Use brainstorming to plan a feature`                |
 | Kiro IDE       | `npx antigravity-awesome-skills --path ~/.kiro/skills`                 | `Use @brainstorming to plan a feature`               |
-| GitHub Copilot | _No installer — paste skills or rules manually_                       | `Ask Copilot to use brainstorming to plan a feature` |
+| GitHub Copilot | `git clone` + `smart-install.ps1` (writes `.instructions.md`)         | `Ask Copilot to use brainstorming to plan a feature` |
 | OpenCode       | `npx antigravity-awesome-skills --path .agents/skills --category development,backend --risk safe,none` | `opencode run @brainstorming help me plan a feature` |
 | AdaL CLI       | `npx antigravity-awesome-skills --path .adal/skills`                   | `Use brainstorming to plan a feature`                |
 | Custom path    | `npx antigravity-awesome-skills --path ./my-skills`                    | Depends on your tool                                   |
@@ -115,7 +146,9 @@ It is an installable GitHub library of reusable `SKILL.md` playbooks for Claude 
 
 ### How do I install it?
 
-Run `npx antigravity-awesome-skills` for the default full-library install, or use a tool-specific flag such as `--codex`, `--cursor`, `--gemini`, `--claude`, or `--antigravity` when you want the installer to target a known skills directory directly.
+The fastest path is to clone the repo and run `smart-install.ps1` — it detects Claude, Cursor, Gemini CLI, Codex, Kiro, OpenCode, and VS Code + Copilot automatically, then installs only what you have.
+
+Alternatively, run `npx antigravity-awesome-skills` for the default full-library install, or use a tool-specific flag such as `--codex`, `--cursor`, `--gemini`, `--claude`, or `--antigravity` when you want to target a known skills directory directly.
 
 ### Should I use the full library or a plugin?
 
