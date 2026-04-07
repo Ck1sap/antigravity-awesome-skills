@@ -250,6 +250,7 @@ Support is optional. The project stays free and open-source for everyone.
 - [Follow @sickn33 on X](https://x.com/sickn33) for project updates and releases.
 - [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) for community expectations and moderation standards.
 - [`SECURITY.md`](SECURITY.md) for security reporting.
+- [RemoteOpenClaw](https://remoteopenclaw.com) - Open marketplace for AI skills and personas built on OpenClaw.
 
 ## Credits & Sources
 
