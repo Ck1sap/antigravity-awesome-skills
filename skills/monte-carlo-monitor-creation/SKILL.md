@@ -12,74 +12,211 @@ tags: [data-observability, monitoring, monte-carlo, monitors-as-code]
 tools: [claude, cursor, codex]
 ---
 
-# Monte Carlo Monitor Creation
+# Monte Carlo Monitor Creation Skill
 
-## Overview
+This skill teaches you to create Monte Carlo monitors correctly via MCP. Every creation tool runs in **dry-run mode** and returns monitors-as-code (MaC) YAML. No monitors are created directly -- the user applies the YAML via the Monte Carlo CLI or CI/CD.
 
-Guides AI agents through creating Monte Carlo monitors via MCP tools. All creation tools run in dry-run mode and return monitors-as-code (MaC) YAML that can be applied via the Monte Carlo CLI or CI/CD. No monitors are created directly.
+Reference files live next to this skill file. **Use the Read tool** (not MCP resources) to access them:
 
-Adapted from [monte-carlo-data/mc-agent-toolkit](https://github.com/monte-carlo-data/mc-agent-toolkit) (`skills/monitor-creation`). Requires the [Monte Carlo MCP Server](https://docs.getmontecarlo.com/docs/mcp-server).
+- Metric monitor details: `references/metric-monitor.md` (relative to this file)
+- Validation monitor details: `references/validation-monitor.md` (relative to this file)
+- Custom SQL monitor details: `references/custom-sql-monitor.md` (relative to this file)
+- Comparison monitor details: `references/comparison-monitor.md` (relative to this file)
+- Table monitor details: `references/table-monitor.md` (relative to this file)
 
-## When to Use This Skill
+## When to activate this skill
 
-- Use when asked to create, add, or set up a monitor for a table, field, or metric
-- Use when a user wants to check data quality rules or enforce data contracts
-- Use when asking about monitoring options for a table or dataset
-- Use when generating monitors-as-code YAML
+Activate when the user:
 
-## How It Works
+- Asks to create, add, or set up a monitor (e.g. "add a monitor for...", "create a freshness check on...", "set up validation for...")
+- Mentions monitoring a specific table, field, or metric
+- Wants to check data quality rules or enforce data contracts
+- Asks about monitoring options for a table or dataset
+- Requests monitors-as-code YAML generation
+- Wants to add monitoring after new transformation logic (when the prevent skill is not active)
 
-### Step 1: Understand the Request
+## When NOT to activate this skill
 
-Determine what the user wants to monitor and which monitor type fits:
+Do not activate when the user is:
 
-| Type | Use When |
-|------|----------|
-| **Metric** | Track statistical metrics on fields (null rates, unique counts, numeric stats) |
-| **Validation** | Row-level data quality checks with conditions |
-| **Custom SQL** | Arbitrary SQL returning a single number with threshold alerts |
-| **Comparison** | Compare metrics between two tables (e.g. dev vs prod) |
-| **Table** | Monitor groups of tables for freshness, schema changes, and volume |
+- Just querying data or exploring table contents
+- Triaging or responding to active alerts (use the prevent skill's Workflow 3)
+- Running impact assessments before code changes (use the prevent skill's Workflow 4)
+- Asking about existing monitor configuration (use `getMonitors` directly)
+- Editing or deleting existing monitors
 
-### Step 2: Identify Tables and Columns
+---
 
-Use `search` and `getTable` MCP tools to find the target table, verify column names, and check domain membership. Never guess column names.
+## Available MCP tools
 
-### Step 3: Confirm and Generate
+All tools are available via the `monte-carlo` MCP server.
 
-Present the monitor configuration in plain language, get user confirmation, then call the appropriate creation tool. Present the resulting YAML in a code block with instructions to save and apply via `montecarlo monitors apply`.
+| Tool                         | Purpose                                                    |
+| ---------------------------- | ---------------------------------------------------------- |
+| `testConnection`             | Verify auth and connectivity before starting               |
+| `search`                     | Find tables/assets by name; use `include_fields` for columns |
+| `getTable`                   | Schema, stats, metadata, domain membership, capabilities   |
+| `getValidationPredicates`    | List available validation rule types for a warehouse       |
+| `getDomains`                 | List MC domains (only needed if table has no domain info)  |
+| `createMetricMonitorMac`     | Generate metric monitor YAML (dry-run)                     |
+| `createValidationMonitorMac` | Generate validation monitor YAML (dry-run)                 |
+| `createComparisonMonitorMac` | Generate comparison monitor YAML (dry-run)                 |
+| `createCustomSqlMonitorMac`  | Generate custom SQL monitor YAML (dry-run)                 |
+| `createTableMonitorMac`      | Generate table monitor YAML (dry-run)                      |
 
-## Examples
+---
 
-### Example 1: Freshness Monitor
+## Monitor types
 
-User: "Add a freshness monitor for the orders table"
+| Type           | Tool                         | Use When                                                                                                                                |
+| -------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Metric**     | `createMetricMonitorMac`     | Track statistical metrics on fields (null rates, unique counts, numeric stats) or row count changes over time. Requires a timestamp field for aggregation. |
+| **Validation** | `createValidationMonitorMac` | Row-level data quality checks with conditions (e.g. "field X is never null", "status is in allowed set"). Alerts on INVALID data.       |
+| **Custom SQL** | `createCustomSqlMonitorMac`  | Run arbitrary SQL returning a single number and alert on thresholds. Most flexible; use when other types don't fit.                     |
+| **Comparison** | `createComparisonMonitorMac` | Compare metrics between two tables (e.g. dev vs prod, source vs target).                                                               |
+| **Table**      | `createTableMonitorMac`      | Monitor groups of tables for freshness, schema changes, and volume. Uses asset selection at database/schema level.                      |
 
-The skill searches for the table, identifies timestamp columns, confirms schedule preferences, and generates MaC YAML for a metric monitor tracking freshness.
+---
 
-### Example 2: Validation Rule
+## Procedure
 
-User: "Make sure status is always one of active, inactive, or pending"
+Follow these steps in order. Do NOT skip steps.
 
-The skill generates a validation monitor that flags rows where the status column contains unexpected values.
+### Validation Phase (Steps 1-3) -- MUST complete before any creation tool is called
 
-## Best Practices
+The number one error pattern is agents skipping validation and calling a creation tool with guessed or incomplete parameters. **Every field in the creation call must be grounded in data retrieved during this phase.** Do not proceed to Step 4 until Steps 1-3 are fully satisfied.
 
-- Always verify column names from `getTable` before calling creation tools
-- Always check the table's domain membership before creating monitors
-- Always confirm the configuration with the user before generating YAML
-- Present the full YAML in a copyable code block
+#### Step 1: Understand the request
 
-## Security & Safety Notes
+Ask yourself:
+- What does the user want to monitor? (a specific table, a metric, a data quality rule, cross-table consistency, freshness/volume at schema level)
+- Which monitor type fits? Use the monitor types table above.
+- Does the user have all the details, or do they need guidance?
 
-- All creation tools run in dry-run mode and return YAML only
-- No monitors are created directly; the user applies YAML via CLI or CI/CD
-- Requires a configured Monte Carlo MCP Server with valid API credentials
+If the user's intent is unclear, ask a focused question before proceeding.
 
-## Common Pitfalls
+#### Step 2: Identify the table(s) and columns
 
-- **Problem:** Guessing column names instead of fetching them from `getTable`
-  **Solution:** Always call `getTable` with `include_fields: true` and use the actual column names returned.
+If you don't have the table MCON:
+1. Use `search` with the table name and `include_fields: ["field_names"]` to find the MCON and get column names.
+2. If the user provided a full table ID like `database:schema.table`, search for it.
+3. Once you have the MCON, call `getTable` with `include_fields: true` and `include_table_capabilities: true` to verify capabilities and get domain info.
 
-- **Problem:** Adding a `schedule` field to table monitor YAML
-  **Solution:** Table monitors do not support the `schedule` field in MaC YAML. Table monitor scheduling is managed automatically by Monte Carlo.
+If you already have the MCON:
+1. Call `getTable` with the MCON, `include_fields: true`, and `include_table_capabilities: true`.
+
+**CRITICAL: You need the actual column names from `getTable` results. NEVER guess or hallucinate column names.** This is the most common source of monitor creation failures.
+
+For monitor types that require a timestamp column (metric monitors), review the column names and identify likely timestamp candidates. Present them to the user if ambiguous.
+
+#### Step 3: Handle domain assignment
+
+Monitors must be assigned to a domain that contains the table being monitored. The `getTable` response includes a `domains` list with `uuid` and `name`.
+
+1. If `domains` is empty: skip domain assignment.
+2. If `domains` has exactly one entry: default `domain_id` to that domain's UUID.
+3. If `domains` has multiple entries: present only those domains and ask the user to pick.
+
+Do NOT present all account domains as options -- only domains that contain the table are valid.
+
+**ALWAYS check the table's `domains` BEFORE calling any creation tool.**
+
+---
+
+### Creation Phase (Steps 4-8)
+
+Only enter this phase after the validation phase is complete with real data from MCP tools.
+
+#### Step 4: Load the sub-skill reference
+
+Based on the monitor type, read the detailed reference for parameter guidance:
+
+- **Metric** -- Read the detailed reference: `references/metric-monitor.md` (relative to this file)
+- **Validation** -- Read the detailed reference: `references/validation-monitor.md` (relative to this file)
+- **Custom SQL** -- Read the detailed reference: `references/custom-sql-monitor.md` (relative to this file)
+- **Comparison** -- Read the detailed reference: `references/comparison-monitor.md` (relative to this file)
+- **Table** -- Read the detailed reference: `references/table-monitor.md` (relative to this file)
+
+#### Step 5: Ask about scheduling
+
+**Skip this step for table monitors.** Table monitors do not support the `schedule` field in MaC YAML — adding it will cause a validation error on `montecarlo monitors apply`. Table monitor scheduling is managed automatically by Monte Carlo.
+
+For all other monitor types, the creation tools default to a fixed schedule running every 60 minutes. Present these options:
+
+1. **Fixed interval** -- any integer for `interval_minutes` (30, 60, 90, 120, 360, 720, 1440, etc.)
+2. **Dynamic** -- MC auto-determines when to run based on table update patterns.
+3. **Loose** -- runs once per day.
+
+Schedule format in MaC YAML:
+- Fixed: `schedule: { type: fixed, interval_minutes: <N> }`
+- Dynamic: `schedule: { type: dynamic }`
+- Loose: `schedule: { type: loose, start_time: "00:00" }`
+
+#### Step 6: Confirm with the user
+
+Before calling the creation tool, present the monitor configuration in plain language:
+- Monitor type
+- Target table (and columns if applicable)
+- What it checks / what triggers an alert
+- Domain assignment
+- Schedule
+
+Ask: "Does this look correct? I'll generate the monitor configuration."
+
+**NEVER call the creation tool without user confirmation.**
+
+#### Step 7: Create the monitor
+
+Call the appropriate creation tool with the parameters built in previous steps. Always pass an MCON when possible. If only table name is available, also pass warehouse.
+
+#### Step 8: Present results
+
+**CRITICAL: Always include the YAML in your response.** The user needs copy-pasteable YAML.
+
+1. If a non-default schedule was chosen, modify the schedule section in the YAML before presenting.
+2. Wrap the YAML in the full MaC structure (see "MaC YAML format" section below).
+3. ALWAYS present the full YAML in a ```yaml code block.
+4. Explain where to put it and how to apply it (see below).
+5. ALWAYS use ISO 8601 format for datetime values.
+6. NEVER reformat YAML values returned by creation tools.
+
+---
+
+## MaC YAML format
+
+The YAML returned by creation tools is the monitor definition. It must be wrapped in the standard MaC structure to be applied:
+
+```yaml
+montecarlo:
+  <monitor_type>:
+    - <returned yaml>
+```
+
+For example, a metric monitor would look like:
+
+```yaml
+montecarlo:
+  metric:
+    - <yaml returned by createMetricMonitorMac>
+```
+
+**Important:** `montecarlo.yml` (without a directory path) is a separate Monte Carlo project configuration file -- it is NOT the same as a monitor definition file. Monitor definitions go in their own `.yml` files, typically in a `monitors/` directory or alongside dbt model schema files.
+
+Tell the user:
+- Save the YAML to a `.yml` file (e.g. `monitors/<table_name>.yml` or in their dbt schema)
+- Apply via the Monte Carlo CLI: `montecarlo monitors apply --namespace <namespace>`
+- Or integrate into CI/CD for automatic deployment on merge
+
+---
+
+## Common mistakes to avoid
+
+- **NEVER guess column names.** Always get them from `getTable`.
+- **NEVER skip the confirmation step** (Step 6).
+- For metric monitors, `aggregate_time_field` MUST be a real timestamp column from the table.
+- For validation monitors, conditions match INVALID data, not valid data.
+- Always pass an MCON when possible. If only table name is available, also pass warehouse.
+- **ALWAYS check table's `domains` BEFORE calling any creation tool.**
+- ALWAYS use ISO 8601 format for datetime values.
+- NEVER reformat YAML values returned by creation tools.
+- Do not call creation tools before the validation phase is complete.
